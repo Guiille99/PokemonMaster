@@ -1,0 +1,38 @@
+@use "../base/variables" as v;
+@use "../base/mixins" as m;
+header{
+    nav{
+        background-color: v.$dark-blue;
+        .logo{
+            min-width: 150px;
+        }
+        a{
+            color: v.$white;
+        }
+        .toggler__button{
+            height: 30px;
+        }
+        .nav-content{
+            display: flex;
+            flex-direction: column;
+            justify-content: stretch;
+            gap: 10px;
+            font-size: 1.2rem;
+
+            @include m.desktop{
+                flex-direction: row-reverse;
+                // flex: auto;
+                justify-content: space-between;
+            }
+            .nav__options{
+                gap: 10px;
+                align-items: center;
+                figure{
+                    height: v.$tamIcon;
+                    width: v.$tamIcon;
+                    min-width: v.$tamIcon;
+                }
+            }
+        }
+    }
+}

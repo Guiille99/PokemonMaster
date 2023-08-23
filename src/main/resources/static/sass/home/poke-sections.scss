@@ -1,0 +1,29 @@
+@use "../base/variables" as v;
+.pokemon__container-main{
+    .pokemon__container{
+        .title{
+            background-color: v.$black;
+            width: fit-content;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            color: v.$gris;
+            figure{
+                height: v.$tamIcon;
+                width: v.$tamIcon;
+            }
+            .pokeball-icon{
+                color: purple;
+                fill: rgba(255, 255, 255, 0.067);
+            }
+        }
+        .pokemon__box{
+            height: 30vh;
+            background-color: v.$black;
+            .card{
+                background-color: v.$light-black;
+            }
+        }
+    }
+}

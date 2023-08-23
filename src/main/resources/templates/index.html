@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head th:replace="~{layouts/plantilla :: head}"></head>
+<body>
+  <header th:replace="~{layouts/plantilla :: header}"></header>
+  <!-- Carrusel -->
+  <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <figure class="h-100">
+          <img th:src="@{/images/carouselPk-1.jpg}" class="d-block img-fluid w-100" alt="Imagen de Pokemon">
+        </figure>
+        <div class="h-100 w-100 position-absolute top-0 d-flex align-items-center justify-content-center">
+          <div class="tagline carousel-caption">
+            <h1 class="tagline__text fw-bold">Conviértete en un maestro Pokémon con nuestra guía completa de Pokedex</h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="carousel-item">
+        <figure class="h-100">
+          <img th:src="@{/images/carouselPk-3.jpg}" class="d-block img-fluid w-100" alt="Imagen de Pokemon">
+        </figure>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <main class="container pokemon__container-main mt-4">
+    <!-- Pokemon destacados -->
+    <div class="pokemon__container">
+      <div class="title">
+        <figure class="m-0">
+          <img th:src="@{/images/pokeball-icon-grey.svg}" alt="Pokeball" class="d-block img-fluid pokeball-icon">
+        </figure>
+        <h3 class="m-0 fw-bold">Pokémon destacados</h3>
+      </div>
+      <!-- Slider -->
+      <div class="pokemon__box">
+
+      </div>
+    </div>
+  </main>
+</body>
+</html>

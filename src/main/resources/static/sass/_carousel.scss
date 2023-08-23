@@ -1,0 +1,43 @@
+@use "base/variables" as v;
+@use "base/mixins" as m;
+@use "sass:color";
+.carousel{
+    height: 20vh;
+    @include m.tablet{
+        height: 50vh;
+    }
+    &-inner, &-item, img{
+        height: 100%;
+    }
+    img{
+        object-fit: cover;
+    }
+    .carousel-control-next-icon, .carousel-control-prev-icon {
+        background-color: v.$black;
+        border-radius: 50%;
+        background-size: 20px;
+    }
+    .carousel-indicators{
+        @include m.custom-indicators(v.$black, 2px, 3px, .7);
+        button{
+            background: url("../images/pokeball-icon.png"); /*Cambiamos el icono de los indicadores del carrusel*/
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: 1.3rem;
+        }
+    }
+    .carousel-item{
+        .tagline{
+            display: flex;
+            align-items: center;
+            position: unset;
+            @include m.bg-dark;
+            padding: 10px;
+            width: 30%;
+            height: 300px;
+            color: v.$white;
+            line-height: 1.2rem;
+            border-radius: 3px;
+        }
+    }
+}

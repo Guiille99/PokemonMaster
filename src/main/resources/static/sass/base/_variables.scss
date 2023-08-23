@@ -1,0 +1,61 @@
+// Colores
+$blue: #007BFF;
+$dark-blue: #001F3F;
+$gris: #c2c1c1;
+$white: #fff;
+$black: #111111;
+$light-black: #363636;
+
+// Colores tipo de pokemon
+$aceroColor: #b0b0b0;
+$aguaColor: #6890f0;
+$bichoColor: #a8b820;
+$dragonColor: #7038f8;
+$electricoColor: #f8d030;
+$fantasmaColor: #705898;
+$fuegoColor: #f08030;
+$hadaColor: #ee99ac;
+$hieloColor: #98d8d8;
+$luchaColor: #c03028;
+$normalColor: #a8a878;
+$plantaColor: #78c850;
+$psiquicoColor: #f85888;
+$rocaColor: #b8a038;
+$siniestroColor: #705848;
+$tierraColor: #e0c068;
+$venenoColor: #a040a0;
+$voladorColor: #a890f0;
+
+// Tamaño iconos navbar
+$tamIcon: 23px;
+
+//Tamaños media-queries
+$small: 480px;
+$medium: 768px;
+$big: 1024px;
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: $small,
+  md: $medium,
+  lg: $big,
+  xl: 1200px,
+  xxl: 1400px
+) !default;
+
+// Fuentes
+@font-face {
+    font-family: 'Poppins';
+    src: url("../../fonts/Poppins-Regular.ttf");
+    src: url("../../fonts/Poppins-SemiBold.ttf");
+    src: url("../../fonts/Poppins-Light.ttf");
+}
+@font-face {
+    font-family: 'Exo2';
+    src: url("../../fonts/Exo2-Regular.ttf");
+    src: url("../../fonts/Exo2-SemiBold.ttf");
+    src: url("../../fonts/Exo2-Light.ttf");
+}
+
+$main_font: "Poppins";
+$second_font: "Exo2";

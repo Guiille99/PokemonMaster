@@ -1,0 +1,25 @@
+{
+  "name": "pokemonmaster",
+  "version": "1.0.0",
+  "description": "Proyecto PokemonMaster utilizando Spring Boot y la API PokeAPI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-sass": "sass --watch --style=compressed src/main/resources/static/sass/app.scss src/main/resources/static/css/app.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Guiille99/PokemonMaster.git"
+  },
+  "author": "Guiille99",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Guiille99/PokemonMaster/issues"
+  },
+  "homepage": "https://github.com/Guiille99/PokemonMaster#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.1",
+    "bootstrap-icons": "^1.10.5",
+    "sass": "^1.66.1"
+  }
+}

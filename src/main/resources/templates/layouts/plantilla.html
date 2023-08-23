@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap-icons.min.css}">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+    <script defer th:src="@{/js/app.js}"></script>
+    <title th:text="${title}"></title>
+</head>
+<body>
+    <header th:fragment="header">
+        <nav class="navbar navbar-expand-lg p-4">
+            <div class="container-fluid">
+                <div class="col-2">
+                    <figure class="logo my-0 navbar-brand">
+                        <a href="#">
+                            <img th:src="@{/images/logo.png}" alt="Logo" class="d-block img-fluid">
+                        </a>
+                    </figure>
+                </div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <img th:src="@{/images/toggler.svg}" alt="Toggler" class="toggler__button">
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="nav-content col  mt-4 mt-lg-0">                  
+                        <ul class="nav__options navbar-nav">
+                            <li class="nav-item d-flex align-items-center gap-2 w-100">
+                                <figure class="m-0">
+                                    <img th:src="@{/images/pokeball-icon.png}" alt="Pokeball" class="d-block img-fluid">
+                                </figure>
+                                <a aria-current="page" href="#">Pokédex</a>
+                            </li>
+                            <li class="nav-item dropdown w-100">
+                                <a class="dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <figure class="m-0">
+                                        <img th:src="@{/images/pikachu-icon.png}" alt="Generaciones" class="d-block img-fluid">
+                                    </figure>
+                                    Generaciones
+                                </a>
+                                <ul class="dropdown-menu w-100">
+                                    <li th:each="generacion, i : ${#numbers.sequence(1, nGeneraciones)}">
+                                        <a class="dropdown-item" th:href="@{'/generacion/' + ${generacion}}" th:text="${generacion + 'ª Generación'}"></a> 
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <form action="" method="post">
+                            <div class="input-group">
+                                <span class="input-group-text" id="addon-wrapping"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control" placeholder="Nombre o número" aria-label="Nombre o número" aria-describedby="addon-wrapping">
+                            </div>
+                            <button type="submit" class="d-none"></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+</body>
+<th:block th:fragment="scripts">  
+</th:block>
+</html>

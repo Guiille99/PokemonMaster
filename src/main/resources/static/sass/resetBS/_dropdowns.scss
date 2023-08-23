@@ -1,0 +1,29 @@
+@use "../base/variables" as v;
+.dropdown-menu{
+    li{
+        &:hover{
+            // background-color: v.$blue;
+            position: relative;
+            color: v.$white;
+            &::after{
+                animation: dropdown-menuEffect .5s linear;
+                animation-fill-mode: forwards;
+            }
+        }
+        &::after{
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            // width: 100%;
+            height: 100%;
+            display: block;
+            background-color: v.$blue;
+            z-index: -1;
+        }
+    }
+}
+@keyframes dropdown-menuEffect {
+    0% {width: 0}
+    100%{width: 100%}
+}
