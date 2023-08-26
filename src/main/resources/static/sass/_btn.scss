@@ -1,0 +1,10 @@
+@use "base/variables" as v;
+@use "sass:color";
+
+.btn-orange{
+    background-color: v.$orange;
+    color: v.$white;
+    &:hover{
+        background-color: darken($color: v.$orange, $amount: 10%);
+    }
+}

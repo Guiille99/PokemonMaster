@@ -30,13 +30,87 @@ h2{
     }
 }
 h3{
-    font-size: 1.5rem;
+    font-size: 1.1rem;
+    @include m.tablet{
+        font-size: 1.4rem;
+    }
+    @include m.desktop{
+        font-size: 1.5rem;
+    }
 }
 a{
     text-decoration: none;
 }
+.acero{
+    background-color: v.$aceroColor;
+    color: v.$black;
+}
+.agua{
+    background-color: v.$aguaColor;
+    color: v.$white;
+}
+.bicho{
+    background-color: v.$bichoColor;
+    color: v.$white;
+}
+.dragon{
+    background-color: v.$dragonColor;
+    color: v.$white;
+}
+.electrico{
+    background-color: v.$electricoColor;
+    color: v.$black;
+}
+.fantasma{
+    background-color: v.$fantasmaColor;
+    color: v.$white;
+}
+.fuego{
+    background-color: v.$fuegoColor;
+    color: v.$white;
+}
+.hada{
+    background-color: v.$hadaColor;
+    color: v.$white;
+}
+.hielo{
+    background-color: v.$hieloColor;
+    color: v.$white;
+}
+.lucha{
+    background-color: v.$luchaColor;
+    color: v.$white;
+}
+.normal{
+    background-color: v.$normalColor;
+    color: v.$black;
+}
+.planta{
+    background-color: v.$plantaColor;
+    color: v.$white;
+}
+.psiquico{
+    background-color: v.$psiquicoColor;
+    color: v.$white;
+}
+.roca{
+    background-color: v.$rocaColor;
+    color: v.$white;
+}
+.siniestro{
+    background-color: v.$siniestroColor;
+    color: v.$white;
+}
+.tierra{
+    background-color: v.$tierraColor;
+    color: v.$black;
+}
+.veneno{
+    background-color: v.$venenoColor;
+    color: v.$white;
+}
+.volador{
+    background-color: v.$voladorColor;
+    color: v.$black;
+}
 
-// .dropdown-menu li:hover{
-//     background-color: v.$blue;
-//     color: v.$white;
-// }

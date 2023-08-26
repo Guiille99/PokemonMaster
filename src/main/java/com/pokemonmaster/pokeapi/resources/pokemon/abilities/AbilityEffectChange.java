@@ -12,5 +12,5 @@ import lombok.Setter;
 @Getter @Setter
 public class AbilityEffectChange {
     private List<Effect> effectEntries;
-    private List<NamedApiResource<VersionGroup>> versionGroup;
+    private NamedApiResource<VersionGroup> versionGroup;
 }

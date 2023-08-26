@@ -19,7 +19,7 @@ public class VersionGroup implements PokeApiResource {
     private Integer order;
     private NamedApiResource<Generation> generation;
     private List<NamedApiResource<MoveLearnMethod>> moveLearnMethods;
-    private List<NamedApiResource<Pokedex>> podexes;
+    private List<NamedApiResource<Pokedex>> pokedexes;
     private List<NamedApiResource<Region>> regions;
     private List<NamedApiResource<Version>> versions;
 }

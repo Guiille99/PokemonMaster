@@ -7,12 +7,13 @@ import com.pokemonmaster.pokeapi.resources.NamedApiResource;
 import com.pokemonmaster.pokeapi.resources.PokeApiResource;
 import com.pokemonmaster.pokeapi.resources.VerboseEffect;
 import com.pokemonmaster.pokeapi.resources.generations.Generation;
+import com.pokemonmaster.pokeapi.utils.Localizable;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class Ability implements PokeApiResource {
+public class Ability implements PokeApiResource, Localizable {
     private Integer id;
     private String name;
     private boolean isMainSeries;

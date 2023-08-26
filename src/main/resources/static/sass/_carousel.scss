@@ -13,9 +13,7 @@
         object-fit: cover;
     }
     .carousel-control-next-icon, .carousel-control-prev-icon {
-        background-color: v.$black;
-        border-radius: 50%;
-        background-size: 20px;
+        @include m.arrow-slider(v.$black, 20px);
     }
     .carousel-indicators{
         @include m.custom-indicators(v.$black, 2px, 3px, .7);
@@ -33,11 +31,16 @@
             position: unset;
             @include m.bg-dark;
             padding: 10px;
-            width: 30%;
-            height: 300px;
+            width: 50%;
             color: v.$white;
-            line-height: 1.2rem;
             border-radius: 3px;
+            @include m.tablet{
+                padding: 30px 10px;
+                font-size: 1.3rem;
+            }
+            @include m.desktop{
+                width: 30%;
+            }
         }
     }
 }

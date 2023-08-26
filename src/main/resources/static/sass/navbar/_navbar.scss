@@ -1,6 +1,9 @@
 @use "../base/variables" as v;
 @use "../base/mixins" as m;
 header{
+    position: sticky;
+    top: 0;
+    z-index: 4;
     nav{
         background-color: v.$dark-blue;
         .logo{

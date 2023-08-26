@@ -1,0 +1,58 @@
+@use "base/mixins" as m;
+@use "base/variables" as v;
+
+.slick-list{
+  overflow: visible !important;
+}
+
+.slick-slide {
+  transition: transform 0.3s, z-index 0.3s;
+}
+.slick-track{
+  width: 7000px !important;
+}
+
+.slick-current {
+  // transform: scale(1.1);
+  width: 300px !important;
+  z-index: 2;
+  transition: all 1s ease;
+  .pokemon__num-img{
+    background-color: v.$black;
+    .pokemon__number{
+      opacity: .8;
+      color: v.$gris;
+    }
+    figure{
+      opacity: 1 !important;
+    }
+  }
+  .pokemon__info{
+    .pokemon__number{
+      display: unset !important;
+      opacity: 0;
+      @include m.fade-in(1s, .5s);
+    }
+    .tipo__info{
+      opacity: 0;
+      display: grid !important;
+      grid-template-columns: .7fr 1fr;
+      row-gap: 4px;
+      font-size: .9rem;
+      @include m.fade-in(1s, .5s);
+    }
+  }
+}
+
+.slick-prev{
+  transform: translateX(20px) !important;
+}
+.slick-next{
+  transform: translateX(-20px) !important;
+}
+.slick-prev, .slick-next{
+  z-index: 2;
+  &::before{
+    color: v.$white !important;
+  }
+}

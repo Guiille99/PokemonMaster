@@ -24,11 +24,22 @@
     opacity: $opacity;
 }
 
+// Flechas para slider y carrusel
+@mixin arrow-slider($bg-color, $bg-size){
+    background-color: $bg-color;
+    border-radius: 50%;
+    background-size: $bg-size;
+}
+
 // Grid
 @mixin grid($columns, $gap){
     display: grid;
     grid-template-columns: repeat($columns, 1fr);
     gap: $gap;
+}
+
+@mixin fade-in($duration, $delay){
+    animation: fade-in $duration ease $delay forwards;
 }
 
 //Media-query
@@ -46,5 +57,15 @@
 @mixin desktop{
     @media screen and (min-width: v.$big) {
         @content;
+    }
+}
+
+// Keyframes
+@keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
     }
 }
