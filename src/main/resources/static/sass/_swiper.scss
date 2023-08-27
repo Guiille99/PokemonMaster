@@ -28,7 +28,7 @@
     }
   }
   .pokemon__info{
-    .pokemon__number{
+    .pokemon__number2{
       display: unset !important;
       opacity: 0;
       @include m.fade-in(1s, .5s);
@@ -45,10 +45,10 @@
 }
 
 .slick-prev{
-  transform: translateX(20px) !important;
+  transform: translateX(35px) !important;
 }
 .slick-next{
-  transform: translateX(-20px) !important;
+  transform: translateX(-35px) !important;
 }
 .slick-prev, .slick-next{
   z-index: 2;

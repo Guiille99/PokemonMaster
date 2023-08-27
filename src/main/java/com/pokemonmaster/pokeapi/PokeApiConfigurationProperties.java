@@ -13,5 +13,6 @@ public class PokeApiConfigurationProperties {
     @NotNull
 	@Value("${pokeapi.base-uri}")
 	private URI baseUri;
-	private int maxBytesToBuffer = 565_000;
+	@Value("${pokeapi.max-buffer-size}")
+	private int maxBytesToBuffer;
 }

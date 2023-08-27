@@ -1,6 +1,6 @@
 @use "../base/variables" as v;
 @use "../base/mixins" as m;
-.pokemon__container-main{
+// .pokemon__container-main{
     .pokemon__container{
         .title{
             margin: 0 auto;
@@ -20,7 +20,6 @@
             }
         }
         .pokemon__box{
-            // height: 50vh;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             .card{
@@ -30,6 +29,7 @@
                 justify-content: space-between;
                 border: 1px solid v.$black;
                 border-radius: 0;
+                overflow: hidden;
                 .pokemon__num-img{
                     position: relative;
                     display: flex;
@@ -38,18 +38,18 @@
                     figure{
                         z-index: 1;
                     }
-                    .pokemon__number{
-                        position: absolute;
-                        top: 30%;
-                        left: 50%;
-                        transform: translate(-50%, -50%);
-                        font-size: 8.5rem;
-                        font-family: v.$second_font;
-                        font-weight: bolder;
-                    }
                     figure, .pokemon__number{
                         opacity: .5;
                     }
+                }
+                .pokemon__number{
+                    position: absolute;
+                    top: 30%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-size: 8.5rem;
+                    font-family: v.$second_font;
+                    font-weight: bolder;
                 }
                 .pokemon__info{
                     background-color: v.$dark-card;
@@ -65,7 +65,7 @@
                     //     row-gap: 4px;
                     //     font-size: .9rem;
                     // }
-                    .pokemon__number, .tipo__info{
+                    .pokemon__number2, .tipo__info{
                         display: none;
                     }
                 }
@@ -76,18 +76,31 @@
             }
         }
     }
-}
-.my_random_team{
-    .card:hover{
-        .pokemon__num-img{
-            background-color: v.$black;
-            .pokemon__number{
-              opacity: .8;
-              color: v.$gris;
-            }
-            figure{
-              opacity: 1 !important;
-            }
-          }
+// }
+.pokemon__container .pokemon__box.my_team{
+    .card{
+        .pokemon__number{
+            font-size: 7rem;
+        }
+        &:hover{
+            .pokemon__num-img{
+                background-color: v.$black;
+                .pokemon__number{
+                  opacity: .8;
+                  color: v.$gris;
+                }
+                figure{
+                  opacity: 1 !important;
+                }
+              }
+        }
+    }
+    .empty-text__container{
+        background-color: v.$black;
+        color: v.$white;
+        padding: 5rem;
+        @include m.tablet{
+            padding: 10rem;
+        }
     }
 }

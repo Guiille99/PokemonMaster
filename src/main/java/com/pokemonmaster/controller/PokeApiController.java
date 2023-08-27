@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,6 @@ public class PokeApiController {
     @Autowired
     private IPokeApiClient pokeApiService;
 
-    //Ejemplo para obtener los pokemons de la 1a generacion
     @GetMapping("/")
     public String home(Model model){
         // PageQuery page = new PageQuery(151, 0);
@@ -43,6 +43,16 @@ public class PokeApiController {
         return "index";
     }
     
+    @GetMapping("/my-team/generate")
+    public ResponseEntity<List<Pokemon>> generateMyRandomTeam(){
+        List<Pokemon> myRandomTeam = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            myRandomTeam.add(getRandomPokemon());
+        }
+        return ResponseEntity.ok(myRandomTeam);
+    }
+
+
     private Integer getNGeneraciones(){
         NamedApiResourceList<Generation> generaciones = pokeApiService.getResource(Generation.class).block();
         return generaciones.getCount();

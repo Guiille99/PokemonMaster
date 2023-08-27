@@ -115,15 +115,15 @@
 							<arguments>install</arguments>
 						</configuration>
 					</execution> -->
-					<execution>
-						<id>compile-sass</id>
-						<goals>
-							<goal>npm</goal>
-						</goals>
-						<configuration>
-							<arguments>run build-sass</arguments>
-						</configuration>
-					</execution>
+<!--					<execution>-->
+<!--						<id>compile-sass</id>-->
+<!--						<goals>-->
+<!--							<goal>npm</goal>-->
+<!--						</goals>-->
+<!--						<configuration>-->
+<!--							<arguments>run build-sass</arguments>-->
+<!--						</configuration>-->
+<!--					</execution>-->
 				</executions>
 			</plugin> 
 		</plugins>

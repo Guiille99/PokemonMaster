@@ -11,39 +11,21 @@
   <body>
     <header th:replace="~{layouts/plantilla :: header}"></header>
     <!-- Carrusel -->
-    <div
-      id="carouselExampleIndicators"
-      class="carousel slide"
-      data-bs-ride="carousel"
-    >
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-indicators">
-        <button
-          type="button"
-          data-bs-target="#carouselExampleIndicators"
-          data-bs-slide-to="0"
-          class="active"
-          aria-current="true"
-          aria-label="Slide 1"
-        ></button>
-        <button
-          type="button"
-          data-bs-target="#carouselExampleIndicators"
-          data-bs-slide-to="1"
-          aria-label="Slide 2"
-        ></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
       </div>
       <div class="carousel-inner">
         <div class="carousel-item active">
           <figure class="h-100">
-            <img
-              th:src="@{/images/carouselPk-1.jpg}"
-              class="d-block img-fluid w-100"
-              alt="Imagen de Pokemon"
-            />
+            <picture>
+              <source media="(min-width: 1024px)" th:attr="srcset=@{/images/carouselPk-1.jpg}">
+              <source media="(min-width: 768px)" th:attr="srcset=@{/images/thumbnails/carouselPk-1_md.jpg}">
+              <img th:src="@{/images/thumbnails/carouselPk-1_sm.jpg}" class="d-block img-fluid w-100" alt="Imagen de Pokemon"/>
+            </picture>
           </figure>
-          <div
-            class="h-100 w-100 position-absolute top-0 d-flex align-items-center justify-content-center"
-          >
+          <div class="h-100 w-100 position-absolute top-0 d-flex align-items-center justify-content-center">
             <div class="tagline carousel-caption">
               <p class="tagline__text fw-bold m-0">
                 Conviértete en un maestro Pokémon con nuestra guía completa de
@@ -55,11 +37,11 @@
 
         <div class="carousel-item">
           <figure class="h-100">
-            <img
-              th:src="@{/images/carouselPk-3.jpg}"
-              class="d-block img-fluid w-100"
-              alt="Imagen de Pokemon"
-            />
+            <picture>
+              <source media="(min-width: 1024px)" th:attr="srcset=@{/images/carouselPk-3.jpg}">
+              <source media="(min-width: 768px)" th:attr="srcset=@{/images/thumbnails/carouselPk-3_md.jpg}">
+              <img th:src="@{/images/thumbnails/carouselPk-3_sm.jpg}" class="d-block img-fluid w-100" alt="Imagen de Pokemon"/>
+            </picture>
           </figure>
         </div>
       </div>
@@ -73,9 +55,9 @@
       </button>
     </div>
 
-    <main class="container pokemon__container-main my-4 overflow-hidden">
+    <main class="container pokemon__container-main my-4">
       <!-- Pokemon destacados -->
-      <div class="pokemon__container my-4">
+      <div class="pokemon__container my-4 overflow-hidden">
         <div class="title">
           <figure class="m-0">
             <img th:src="@{/images/pokeball-icon-grey.svg}" alt="Pokeball" class="d-block img-fluid pokeball-icon"/>
@@ -94,7 +76,7 @@
             <div class="pokemon__info">
               <div class="d-flex align-items-center justify-content-between">
                 <span class="pokemon__name fw-bold" th:text="${#strings.capitalize(pokemon.name)}"></span>
-                <span class="pokemon__number" th:text="${pokemon.id}"></span>
+                <span class="pokemon__number2" th:text="${pokemon.id}"></span>
               </div>
               <div class="tipo__info">
                   <span>Tipo</span>
@@ -117,75 +99,20 @@
         </div>
       </div>
 
-      <div class="pokemon__container my_random_team mt-5">
+      <!-- Equipo aleatorio -->
+      <div class="pokemon__container mt-5">
         <div class="title">
           <figure class="m-0 align-self-baseline align-self-md-center">
             <img th:src="@{/images/pokeball-icon-grey.svg}" alt="Pokeball" class="d-block img-fluid pokeball-icon"/>
           </figure>
           <div class="d-flex align-items-center gap-3 flex-column flex-md-row">
             <h3 class="m-0 fw-bold">Genera tu equipo aleatorio</h3>
-            <button class="btn btn-orange"><i class="bi bi-arrow-clockwise"></i> Generar</button>
+            <button class="btn btn-orange btn-generate-randomTeam"><i class="bi bi-arrow-clockwise"></i> Generar</button>
           </div>
         </div>
-        <div class="pokemon__box">
-          <div class="card">
-            <div class="pokemon__num-img">
-              <figure class="m-0">
-                <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="" class="d-block img-fluid"/>
-              </figure>
-              <span class="pokemon__number">1</span>
-            </div>
-            <div class="pokemon__info">
-              <p class="pokemon__name">Pikachu</p>
-              <div class="types">
-                <span class="electrico pokemon__type">Eléctrico</span>
-                <span class="lucha pokemon__type">Lucha</span>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="pokemon__num-img">
-              <figure class="m-0">
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="" class="d-block img-fluid"/>
-              </figure>
-              <span class="pokemon__number">1</span>
-            </div>
-            <div class="pokemon__info">
-              <p class="pokemon__name">Pikachu</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="pokemon__num-img">
-              <figure class="m-0">
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="" class="d-block img-fluid"/>
-              </figure>
-              <span class="pokemon__number">1</span>
-            </div>
-            <div class="pokemon__info">
-              <p class="pokemon__name">Pikachu</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="pokemon__num-img">
-              <figure class="m-0">
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="" class="d-block img-fluid"/>
-              </figure>
-              <span class="pokemon__number">1</span>
-            </div>
-            <div class="pokemon__info">
-              <p class="pokemon__name">Pikachu</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="pokemon__num-img">
-              <figure class="m-0">
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="" class="d-block img-fluid"/>
-              </figure>
-              <span class="pokemon__number">1</span>
-            </div>
-            <div class="pokemon__info">
-              <p class="pokemon__name">Pikachu</p>
-            </div>
+        <div class="pokemon__box my_team position-relative">
+          <div class="empty-text__container">
+            <p class="text-center m-0">Tu equipo aparecerá aquí</p>
           </div>
         </div>
       </div>
@@ -206,7 +133,6 @@
           {
             breakpoint: 1024,
             settings: {
-              // arrows: false,
               centerMode: true,
               slidesToShow: 3,
             },
