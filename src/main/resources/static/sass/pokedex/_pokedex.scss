@@ -1,0 +1,25 @@
+@use "../base/variables" as v;
+@use "../base/mixins" as m;
+
+.pokedex__container{
+    // @include m.grid(4, 10px);
+    min-height: 500px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    .pokemon-card{
+        // border: 2px solid red;
+        border-radius: 5px;
+        figure{
+            border-radius: 5px;
+            background-color: lighten($color: v.$gris, $amount: 20%);
+        }
+        .pokedex_number{
+            color: v.$dark-card;
+        }
+        .pokemon__name{
+            font-size: 1.3rem;
+        }
+    }
+
+}

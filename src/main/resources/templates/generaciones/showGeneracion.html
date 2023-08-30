@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{components/resources :: resources}"></th:block>
+    <title th:text="PokeMaster"></title>
+</head>
+<body class="d-flex flex-column justify-content-between">
+    <header th:replace="~{layouts/plantilla :: header}"></header>
+    
+    <div class="container my-4 vh-100">
+        <div class="pokemon__container">
+            <div class="title">
+                <figure class="m-0">
+                    <img th:src="@{/images/pokeball-icon-grey.svg}" alt="Pokeball" class="d-block img-fluid pokeball-icon"/>
+                </figure>
+                <h3 class="m-0 fw-bold">Pokémon de la <th:block th:text="${generacion}"></th:block>ª Generación</h3>
+            </div>
+            <div class="pokedex__container mt-3 col-12 col-lg-7 m-auto position-relative">
+              <!-- <div class='spinner-container position-absolute top-0 start-0 vw-100 h-100 d-flex align-items-center justify-content-center'>
+                <div class='spinner spinner-border text-light' role='status'>
+                  <span class='visually-hidden'>Loading...</span>
+                </div>
+              </div> -->
+                <!-- <div class="pokemon-card" th:each="pokemon : ${pokemons}">
+                    <figure class="m-0">
+                        <img loading="lazy" th:if="${pokemon.sprites.other.officialArtwork.frontDefault != null}" th:src="${pokemon.sprites.other.officialArtwork.frontDefault}" th:alt="${pokemon.name}" class="d-block img-fluid">
+                    </figure>
+                    <div class="pokemon__info p-1">
+                        <p class="pokedex__number fw-bold m-0" th:text="${'Nº' + pokemon.id}"></p>
+                        <p class="pokemon__name fw-bold m-0 mt-2" th:text="${#strings.capitalize(pokemon.name)}"></p>
+                        <div class="types mt-1">
+                          <span class="pokemon__type" th:each="type : ${pokemon.types}" th:classappend="${type.type.name.replaceAll('[áÁ]', 'a').replaceAll('[éÉ]', 'e').replaceAll('[íÍ]', 'i').replaceAll('[óÓ]', 'o').replaceAll('[úÚ]', 'u')}" th:text="${#strings.capitalize(type.type.name)}"></span>
+                        </div>
+                    </div>
+                </div> -->  
+            </div>
+            <nav class="my-5">
+                <ul class="pagination justify-content-center d-none">
+                  <li class="page-item">
+                    <p class="page-link page-item-previous" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </p>
+                  </li>
+                  <li class="page-item" th:classappend="${i == currentPage} ? active" th:each="i : ${#numbers.sequence(1, totalPaginas)}"><p class="page-link" th:text="${i}"></p></li>
+                  <li class="page-item">
+                    <p class="page-link page-item-next" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </p>
+                  </li>
+                </ul>
+              </nav>
+        </div>
+    </div>
+
+    <footer th:replace="~{layouts/plantilla :: footer}" class="position-absolute bottom-0"></footer>
+</body>
+<script th:inline="javascript">
+  let pokedexContainer = $(".pokedex__container");
+  let page = 0;
+  let pageLinks = $(".page-link");
+  /*<![CDATA[*/    
+  let totalPaginas = /*[[${totalPaginas}]]*/ null;
+  /*]]>*/
+  /*<![CDATA[*/    
+  let generacion = /*[[${generacion}]]*/ null;
+  /*]]>*/
+  let url = `/api/generacion/${generacion}`;
+</script>
+<script th:src="@{/js/pagination.js}"></script>
+</html>

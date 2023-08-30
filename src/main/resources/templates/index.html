@@ -69,7 +69,7 @@
           <div class="card" th:each="pokemon : ${pokemonDestacados}">
             <div class="pokemon__num-img">
               <figure class="m-0">
-                <img th:if="${pokemon.sprites.other.officialArtwork.frontDefault != null}" th:src="${pokemon.sprites.other.officialArtwork.frontDefault}" alt="${pokemon.name}" class="d-block img-fluid"/>
+                <img th:if="${pokemon.sprites.other.officialArtwork.frontDefault != null}" th:src="${pokemon.sprites.other.officialArtwork.frontDefault}" th:alt="${pokemon.name}" class="d-block img-fluid"/>
               </figure>
               <span class="pokemon__number" th:text="${pokemon.id}"></span>
             </div>
@@ -81,9 +81,7 @@
               <div class="tipo__info">
                   <span>Tipo</span>
                   <div class="types d-flex gap-1 flex-wrap">
-                    
                     <span class="pokemon__type" th:each="type : ${pokemon.types}" th:classappend="${type.type.name.replaceAll('[áÁ]', 'a').replaceAll('[éÉ]', 'e').replaceAll('[íÍ]', 'i').replaceAll('[óÓ]', 'o').replaceAll('[úÚ]', 'u')}" th:text="${#strings.capitalize(type.type.name)}"></span>
-                    <!-- <span class="electric pokemon__type">Eléctrico</span> -->
                   </div>
                   <span>Habilidad</span>
                   <div class="habilidades">

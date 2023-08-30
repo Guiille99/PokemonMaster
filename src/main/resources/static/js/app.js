@@ -1,7 +1,31 @@
+const typesInSpanish = {
+    normal: "Normal",
+    fighting: "Lucha",
+    flying: "Volador",
+    steel: "Acero",
+    water: "Agua",
+    bug: "Bicho",
+    dragon: "Dragón",
+    electric: "Eléctrico",
+    ghost: "Fantasma",
+    fire: "Fuego",
+    fairy: "Hada",
+    ice: "Hielo",
+    grass: "Planta",
+    psychic: "Psíquico",
+    rock: "Roca",
+    dark: "Siniestro",
+    ground: "Tierra",
+    poison: "Veneno"    
+};
+
 $(document).ready(function(){
     $(".btn-generate-randomTeam").click(function() {
         let container = $(".my_team.pokemon__box");
+        // let pokedexContainer = $(".my_team.pokemon__box");
+        let url = "/my-team/generate";
         let boton = $(".btn-generate-randomTeam");
+
         $.ajax({
             async: true,
             type: "GET",
@@ -17,7 +41,6 @@ $(document).ready(function(){
             },
             success: function(data){
                 container.html("");
-                // console.log(data);
                 data.forEach(pokemon => {
                     let typesHTML = '';
                     pokemon.types.forEach(type => {
@@ -47,6 +70,130 @@ $(document).ready(function(){
         })
     })
 })
+
+function loadPokemonList(url, pokedexContainer){
+    $.ajax({
+        async: true,
+        type: "GET",
+        url: url,
+        beforeSend: function() {
+          pokedexContainer.prepend(
+            "<div class='spinner-container position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center'>"+
+            "<div class='spinner spinner-border text-light' role='status'>"+
+            "<span class='visually-hidden'>Loading...</span>"+
+            "</div>"+
+            "</div>")
+          },
+          success: function (pokemons) {
+            pokedexContainer.html("");
+            const promises = [];
+            pokemons.results.forEach(pk =>{
+              const promise = fetchPokemonDetails(pk.url);
+              promises.push(promise);
+            })
+            Promise.all(promises)
+            .then(pokemonList => {
+              pokemonList.forEach(pokemon => {
+                let typesHTML = '';
+                pokemon.types.forEach(type => {
+                    typesHTML += `<span class='${eliminaTildes(type.type.name)} pokemon__type'>${capitalize(type.type.name)}</span>`;
+                }); 
+                pokedexContainer.append(`<div class="pokemon-card">
+                            <figure class="m-0">
+                                <img loading="lazy" src="${pokemon.sprites.other['official-artwork'].front_default}" alt="${capitalize(pokemon.name)}" class="d-block img-fluid">
+                            </figure>
+                            <div class="pokemon__info p-1">
+                                <p class="pokedex__number fw-bold m-0">${'Nº' + pokemon.id}</p>
+                                <p class="pokemon__name fw-bold m-0 mt-2">${capitalize(pokemon.name)}</p>
+                                <div class="types d-flex gap-1 mt-1">
+                                ${typesHTML}
+                                </div>
+                            </div>
+                        </div>`);
+              });
+              // $(".spinner-container").remove();
+              $(".container").removeClass("vh-100");
+              if (totalPaginas > 1) {
+                $(".pagination").removeClass("d-none");
+              }
+          })
+          .catch(error => {
+              console.error(error);
+          })
+        }      
+    })
+}
+
+function loadPokemonPaginateList(page) {
+    $.ajax({
+      async: true,
+      type: "GET",
+      url: url,
+      data: {page: page},
+      beforeSend: function() {
+        pokedexContainer.prepend(
+          "<div class='spinner-container position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center'>"+
+          "<div class='spinner spinner-border text-light' role='status'>"+
+          "<span class='visually-hidden'>Loading...</span>"+
+          "</div>"+
+          "</div>")
+        },
+        success: function (pokemons) {
+          pokedexContainer.html("");
+          const promises = [];
+          pokemons.results.forEach(pk =>{
+            const promise = fetchPokemonDetails(pk.url);
+            promises.push(promise);
+          })
+          Promise.all(promises)
+          .then(pokemonList => {
+            pokemonList.forEach(pokemon => {
+              let typesHTML = '';
+              pokemon.types.forEach(type => {
+                  typesHTML += `<span class='${eliminaTildes(typesInSpanish[type.type.name].toLowerCase())} pokemon__type'>${typesInSpanish[type.type.name]}</span>`;
+              }); 
+              pokedexContainer.append(`<div class="pokemon-card">
+                          <figure class="m-0">
+                              <img loading="lazy" src="${pokemon.sprites.other['official-artwork'].front_default}" alt="${capitalize(pokemon.name)}" class="d-block img-fluid">
+                          </figure>
+                          <div class="pokemon__info p-1">
+                              <p class="pokedex__number fw-bold m-0">${'Nº' + pokemon.id}</p>
+                              <p class="pokemon__name fw-bold m-0 mt-2">${capitalize(pokemon.name)}</p>
+                              <div class="types d-flex gap-1 mt-1">
+                              ${typesHTML}
+                              </div>
+                          </div>
+                      </div>`);
+            });
+            // $(".spinner-container").remove();
+            $(".container").removeClass("vh-100");
+            if (totalPaginas > 1) {
+              $(".pagination").removeClass("d-none");
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        })
+      }      
+    })
+}
+
+
+function fetchPokemonDetails(url) {
+  return new Promise((resolve, reject) => {
+      $.ajax({
+          type: "GET",
+          url: url,
+          success: function(pokemon) {
+              resolve(pokemon);
+          },
+          error: function(error) {
+              reject(error);
+          }
+      });
+  });
+}
+
 
 function eliminaTildes(txt) {
     return txt.normalize("NFD").replace(/[\u0300-\u036f]/g, '');

@@ -12,6 +12,12 @@ import com.pokemonmaster.pokeapi.query.PageQuery;
 import com.pokemonmaster.pokeapi.resources.NamedApiResource;
 import com.pokemonmaster.pokeapi.resources.NamedApiResourceList;
 import com.pokemonmaster.pokeapi.resources.PokeApiResource;
+import com.pokemonmaster.pokeapi.resources.generations.Generation;
+import com.pokemonmaster.pokeapi.resources.pokemon.abilities.Ability;
+import com.pokemonmaster.pokeapi.resources.pokemon.pokemon.Pokemon;
+import com.pokemonmaster.pokeapi.resources.pokemon.pokemon.PokemonAbility;
+import com.pokemonmaster.pokeapi.resources.pokemon.pokemon.PokemonType;
+import com.pokemonmaster.pokeapi.resources.types.Type;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,6 +30,8 @@ public class ReactiveCachingPokeApiClient implements IPokeApiClient {
 		this.entityFactory = entityFactory;
 		this.cacheFacade = cacheFacade;
 	}
+
+	
 
 	@Override
 	public <T extends PokeApiResource> Mono<T> getResource(Class<T> cls, String idOrName) {
@@ -78,5 +86,56 @@ public class ReactiveCachingPokeApiClient implements IPokeApiClient {
             .map(resource -> resourceToCacheSpec(resource, cls))
             .collect(Collectors.toList());
 	}
+
+
+
+	@Override
+	public Pokemon getPokemonDto(String idOrName) {
+		Pokemon pokemon = new Pokemon();
+		Pokemon pokemonAux = getResource(Pokemon.class, idOrName).block();
+		pokemon.setId(pokemonAux.getId());
+        pokemon.setName(pokemonAux.getName());
+        pokemon.setAbilities(abilitiesInSpanish(pokemonAux.getAbilities()));
+        pokemon.setTypes(typesInSpanish(pokemonAux.getTypes()));
+        pokemon.setSprites(pokemonAux.getSprites());
+		return pokemon;
+	}
+
+
+	@Override
+ 	public Integer getNGeneraciones(){
+        NamedApiResourceList<Generation> generaciones = getResource(Generation.class).block();
+        return generaciones.getCount();
+    }
+	@Override
+    public Pokemon getRandomPokemon(){
+        Pokemon pokemon = new Pokemon();
+        Pokemon pokemonAux = getResource(Pokemon.class, String.valueOf((int) (Math.random()*500)+1)).block();
+        pokemon.setId(pokemonAux.getId());
+        pokemon.setName(pokemonAux.getName());
+        pokemon.setAbilities(abilitiesInSpanish(pokemonAux.getAbilities()));
+        pokemon.setTypes(typesInSpanish(pokemonAux.getTypes()));
+        pokemon.setSprites(pokemonAux.getSprites());
+
+        return pokemon;
+    }
+
+	@Override
+    public List<PokemonType> typesInSpanish(List<PokemonType> types){
+        for (PokemonType type : types) {
+            Type typeResource = getResource(Type.class, type.getType().getName()).block();
+            type.getType().setName(typeResource.getNames().get(5).getName().toLowerCase());
+        }
+        return types;
+    }
+	
+	@Override
+    public List<PokemonAbility> abilitiesInSpanish(List<PokemonAbility> abilities){
+        for (PokemonAbility ability : abilities) {
+            Ability abilityResource = getResource(Ability.class, ability.getAbility().getName()).block();
+            ability.getAbility().setName(abilityResource.getNames().get(5).getName());
+        }
+        return abilities;
+    } 
     
 }
