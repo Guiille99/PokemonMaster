@@ -1,0 +1,23 @@
+@use "../base/variables" as v;
+@use "../base/mixins" as m;
+.advancedSearch__container{
+    .types{
+        @include m.grid(1, 10px);
+        @include m.tablet{
+            @include m.grid(2, 10px);
+            column-gap: 20px;
+        }
+        input[type="checkbox"]:checked + label {
+            background-color: v.$blue;
+            color: v.$white;
+        }
+        label{
+            padding: 6px, 12px;
+        }
+    }
+    .buttons__container{
+        button{
+            font-size: 1.3rem;
+        }
+    }
+}

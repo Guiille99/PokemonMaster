@@ -1,0 +1,7 @@
+@use "base/variables" as v;
+
+.accordion{
+    .accordion-body{
+        background-color: v.$black;
+    }
+}

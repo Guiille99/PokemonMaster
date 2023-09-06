@@ -1,6 +1,6 @@
 $(document).ready(function(){
     pokedexContainer.html("");
-    loadPokemonPaginateList(page);
+    loadPokemonPaginateList(page, true);
     $(pageLinks[1]).addClass("active");
     $(pageLinks[0]).addClass("disabled");
 
@@ -24,6 +24,6 @@ $(document).ready(function(){
         $(pageLinks[0]).removeClass("disabled");
       }
       $(pageLinks[page]).addClass("active");
-      loadPokemonPaginateList(page);
+      loadPokemonPaginateList(page, true);
     })
   });

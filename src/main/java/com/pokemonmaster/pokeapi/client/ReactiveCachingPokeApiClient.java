@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.springframework.scheduling.annotation.Async;
+
 import com.pokemonmaster.pokeapi.cache.CacheSpec;
 import com.pokemonmaster.pokeapi.cache.ICacheFacade;
 import com.pokemonmaster.pokeapi.client.interfaces.IPokeApiClient;
@@ -137,5 +139,23 @@ public class ReactiveCachingPokeApiClient implements IPokeApiClient {
         }
         return abilities;
     } 
+
+	@Override
+	@Async
+	public NamedApiResource<Ability> getAbilityInSpanish(NamedApiResource<Ability> habilidad){
+		habilidad.setName(getResource(Ability.class, habilidad.getName()).block().getNames().get(5).getName());
+		return habilidad;
+	}
+
+
+
+	@Override
+	public int sortByID(String pkId1, String pkId2) {
+		return Integer.compare(getIdFromURL(pkId1), getIdFromURL(pkId2));
+	}
+
+	private Integer getIdFromURL(String url){
+		return Integer.parseInt(url.substring(url.lastIndexOf("/") + 1));
+	}	
     
 }

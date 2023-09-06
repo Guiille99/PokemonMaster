@@ -7,6 +7,7 @@ import com.pokemonmaster.pokeapi.query.PageQuery;
 import com.pokemonmaster.pokeapi.resources.NamedApiResource;
 import com.pokemonmaster.pokeapi.resources.NamedApiResourceList;
 import com.pokemonmaster.pokeapi.resources.PokeApiResource;
+import com.pokemonmaster.pokeapi.resources.pokemon.abilities.Ability;
 import com.pokemonmaster.pokeapi.resources.pokemon.pokemon.Pokemon;
 import com.pokemonmaster.pokeapi.resources.pokemon.pokemon.PokemonAbility;
 import com.pokemonmaster.pokeapi.resources.pokemon.pokemon.PokemonType;
@@ -25,4 +26,6 @@ public interface IPokeApiClient {
 	List<PokemonType> typesInSpanish(List<PokemonType> types);
 	List<PokemonAbility> abilitiesInSpanish(List<PokemonAbility> abilities);
 	Pokemon getPokemonDto(String idOrName);
+	NamedApiResource<Ability> getAbilityInSpanish(NamedApiResource<Ability> habilidad);
+	int sortByID(String pkId1, String pkId2);
 }

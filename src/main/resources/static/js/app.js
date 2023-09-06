@@ -69,6 +69,19 @@ $(document).ready(function(){
             }
         })
     })
+
+    $(document).scroll(function(){
+      if (scrollY>100) {
+        $("#btn-scrollToTop").fadeIn();
+      } 
+      else{
+        $("#btn-scrollToTop").fadeOut();
+      }
+    })
+
+    $("#btn-scrollToTop").click(function(){
+      scrollTo(0,0);
+    })
 })
 
 function loadPokemonList(url, pokedexContainer){
@@ -124,7 +137,7 @@ function loadPokemonList(url, pokedexContainer){
     })
 }
 
-function loadPokemonPaginateList(page) {
+function loadPokemonPaginateList(page, cleanContainer) {
     $.ajax({
       async: true,
       type: "GET",
@@ -139,14 +152,17 @@ function loadPokemonPaginateList(page) {
           "</div>")
         },
         success: function (pokemons) {
-          pokedexContainer.html("");
+          if (cleanContainer) {
+            pokedexContainer.html("");
+          }
           const promises = [];
-          pokemons.results.forEach(pk =>{
+          pokemons.forEach(pk =>{
             const promise = fetchPokemonDetails(pk.url);
             promises.push(promise);
           })
           Promise.all(promises)
           .then(pokemonList => {
+            $(".spinner-container").remove();
             pokemonList.forEach(pokemon => {
               let typesHTML = '';
               pokemon.types.forEach(type => {
@@ -167,7 +183,7 @@ function loadPokemonPaginateList(page) {
             });
             // $(".spinner-container").remove();
             $(".container").removeClass("vh-100");
-            if (totalPaginas > 1) {
+            if (typeof totalPaginas !== "undefined" && totalPaginas > 1) {
               $(".pagination").removeClass("d-none");
             }
         })
@@ -194,6 +210,145 @@ function fetchPokemonDetails(url) {
   });
 }
 
+function getAllAbilities() {
+  $.ajax({
+    async: true,
+    type: "GET",
+    url: "/api/pokedex/abilities",
+    success: function(abilitiesData){
+      abilitiesData.results.forEach(abilityData => {
+        // console.log(abilityData)
+        $.ajax({
+          type: "GET",
+          url: abilityData.url,
+          success: function(ability){
+            // console.log(ability.names);
+            // console.log(ability.names.some(obj => obj.language.name == 'es'));
+            if (ability.names.some(obj => obj.language.name == 'es')) {
+              $("#habilidades").append(`<option value='${ability.names.find(obj => obj.language.name === 'en').name}'>${ability.names.find(obj => obj.language.name === 'es').name}</option>`)
+            } else{
+              $("#habilidades").append(`<option value='${ability.names.find(obj => obj.language.name === 'en').name}'>${ability.names.find(obj => obj.language.name === 'en').name}</option>`)
+            }
+          }
+        })
+      });
+    }
+  })
+}
+
+function getPokemonFilter(filter) {
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: filter,
+    beforeSend: function() {
+      pokedexContainer.prepend(
+        "<div class='spinner-container position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center'>"+
+        "<div class='spinner spinner-border text-light' role='status'>"+
+        "<span class='visually-hidden'>Loading...</span>"+
+        "</div>"+
+        "</div>")
+    },
+    success: function (response) {
+        if (response.pokemons.length > 0) {
+          const promises = [];
+          $("#empty-message").html("");
+          response.pokemons.forEach(pk =>{
+            const promise = fetchPokemonDetails(pk.url);
+            promises.push(promise);
+          })
+          Promise.all(promises)
+          .then(pokemonList => {
+            pokedexContainer.html("");
+            if (response.isFinish) {
+              $("#btn-load-more").remove();
+            }
+            pokemonList.forEach(pokemon => {
+              let typesHTML = '';
+              pokemon.types.forEach(type => {
+                  typesHTML += `<span class='${eliminaTildes(typesInSpanish[type.type.name].toLowerCase())} pokemon__type'>${typesInSpanish[type.type.name]}</span>`;
+              }); 
+              pokedexContainer.append(`<div class="pokemon-card">
+                          <figure class="m-0">
+                              <img loading="lazy" src="${pokemon.sprites.other['official-artwork'].front_default}" alt="${capitalize(pokemon.name)}" class="d-block img-fluid">
+                          </figure>
+                          <div class="pokemon__info p-1">
+                              <p class="pokedex__number fw-bold m-0">${'Nº' + pokemon.id}</p>
+                              <p class="pokemon__name fw-bold m-0 mt-2">${capitalize(pokemon.name)}</p>
+                              <div class="types d-flex gap-1 mt-1">
+                              ${typesHTML}
+                              </div>
+                          </div>
+                      </div>`);
+            });
+            $(".container").removeClass("vh-100");
+        })
+        .catch(error => {
+            console.error(error);
+        })
+        } else {
+          pokedexContainer.html("");
+          $("#empty-message").html(`<div class="alert alert-warning" role="alert">
+                                    <i class='bi bi-exclamation-triangle-fill'></i>
+                                    No se ha encontrado ningún Pokemon
+                                  </div>`
+          );
+        }
+    } 
+  })
+}
+
+function loadMorePokemon(page) {
+  $.ajax({
+    type: "GET",
+    url: "/api/pokedex/loadMore",
+    data: {page: page},
+    beforeSend: function() {
+      pokedexContainer.prepend(
+        "<div class='spinner-container position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center'>"+
+        "<div class='spinner spinner-border text-light' role='status'>"+
+        "<span class='visually-hidden'>Loading...</span>"+
+        "</div>"+
+        "</div>")
+    },
+    success: function (response) {
+        const promises = [];
+        response.pokemons.forEach(pk =>{
+          const promise = fetchPokemonDetails(pk.url);
+          promises.push(promise);
+        })
+        Promise.all(promises)
+        .then(pokemonList => {
+          $(".spinner-container").remove();
+          if (response.isFinish) {
+            $("#btn-load-more").remove();
+          }
+          pokemonList.forEach(pokemon => {
+            let typesHTML = '';
+            pokemon.types.forEach(type => {
+                typesHTML += `<span class='${eliminaTildes(typesInSpanish[type.type.name].toLowerCase())} pokemon__type'>${typesInSpanish[type.type.name]}</span>`;
+            }); 
+            pokedexContainer.append(`<div class="pokemon-card">
+                        <figure class="m-0">
+                            <img loading="lazy" src="${pokemon.sprites.other['official-artwork'].front_default}" alt="${capitalize(pokemon.name)}" class="d-block img-fluid">
+                        </figure>
+                        <div class="pokemon__info p-1">
+                            <p class="pokedex__number fw-bold m-0">${'Nº' + pokemon.id}</p>
+                            <p class="pokemon__name fw-bold m-0 mt-2">${capitalize(pokemon.name)}</p>
+                            <div class="types d-flex gap-1 mt-1">
+                            ${typesHTML}
+                            </div>
+                        </div>
+                    </div>`);
+          });
+          $(".container").removeClass("vh-100");
+      })
+      .catch(error => {
+          console.error(error);
+      })
+    } 
+  })
+}
 
 function eliminaTildes(txt) {
     return txt.normalize("NFD").replace(/[\u0300-\u036f]/g, '');

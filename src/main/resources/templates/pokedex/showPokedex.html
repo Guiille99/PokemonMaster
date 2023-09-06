@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{components/resources :: resources}"></th:block>
+    <title>PokemonMaster | Pokedex</title>
+</head>
+<body>
+    <header th:replace="~{layouts/plantilla :: header}"></header>
+    
+    <div class="container my-4">
+        <h2 class="fw-bold">Pokédex</h2>
+        <div class="form__container">
+            <form action="/api/pokedex/filter" method="post" id="filterPokemonForm">
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <div class="form-floating">
+                      <input type="text" class="form-control" id="pokemonNameOrId" name="nombre" placeholder="Nombre o número en la Pokédex">
+                      <label for="pokemonNameOrId">Nombre o número en la Pokédex</label>
+                    </div>
+                </div>
+
+                <!-- Búsqueda avanzada -->
+                <div class="accordion m-auto advancedSearch__container" id="accordionExample">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed col-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                          Búsqueda avanzada 
+                        </button>
+                      </h2>
+                      <div id="collapseOne" class="accordion-collapse collapse text-light" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          <div class="d-flex justify-content-between">
+                            <!-- Tipos y debilidades -->
+                            <div>
+                              <h3>Tipo y debilidad</h3>
+                              <div class="types">
+                                <!-- <div class="type d-flex gap-3">
+                                  <span class="pokemon__type fuego">Fuego</span>
+                                  <div class="btn-group gap-3" role="group" aria-label="Tipo y debilidad">
+                                    <input type="checkbox" class="btn-check" id="pk1" name="tipos" value="fuego" autocomplete="off">
+                                    <label class="btn btn-grey checkboxLabel rounded-circle fw-bold" for="pk1">T</label>
+                                  
+                                    <input type="checkbox" class="btn-check" id="pk2" name="debilidades" value="fuego" autocomplete="off">
+                                    <label class="btn btn-grey checkboxLabel rounded-circle fw-bold" for="pk2">D</label>
+                                  </div>
+                                </div> -->
+                              </div>
+                            </div>
+                            <!-- Habilidades -->
+                            <div class="col-md-4">
+                              <h3>Habilidades</h3>
+                              <div class="abilities">
+                                <select name="habilidad" id="habilidades" class="form-select">
+                                  <option value="" selected>-- Seleccione una habilidad --</option>
+                                  <!-- <option value="ability" th:each="ability : ${abilityStr}" th:text="${ability}"></option> -->
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="buttons__container d-flex justify-content-end gap-3 mt-4">
+                            <button type="reset" class="btn btn-grey fw-bold">Restablecer</button>
+                            <button type="submit" class="btn btn-orange fw-bold"><i class="bi bi-search"></i> Buscar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>                  
+                </div>
+            </form>
+        </div>
+        <div class="d-flex flex-column gap-5 my-4 col-md-7 m-auto">
+          <div id="empty-message"></div>
+          <div class="pokedex__container"></div>
+          <button id="btn-load-more" class="btn btn-orange m-auto">Cargar más</button>
+        </div>
+    </div>
+
+    <div th:replace="~{layouts/plantilla :: btn-scrollToTop}"></div>
+
+    <footer th:replace="~{layouts/plantilla :: footer}" class="position-absolute bottom-0"></footer>
+</body>
+<script>
+  let url = "/api/generacion";
+  let pokedexContainer = $(".pokedex__container");
+  let page = 0;
+  // loadPokemonPaginateList(0, false);
+  getPokemonFilter({generacion: 1});
+
+  $("#btn-load-more").click(function(){
+    page++;
+    loadMorePokemon(page);
+  })
+
+  $("#filterPokemonForm").submit(function(e){
+    e.preventDefault();
+    url = "/api/pokedex/filter";
+    console.log($(this).serialize())
+    getPokemonFilter($(this).serialize());
+  })
+  let typesContainer = $(".types");
+  for (const type of Object.entries(typesInSpanish)) {
+    // console.log(type[0]);
+  typesContainer.append(`<div class="type d-flex justify-content-between gap-3">
+                          <span class="pokemon__type ${eliminaTildes(type[1].toLowerCase())} align-self-center px-3">${type[1]}</span>
+                          <div class="btn-group gap-3" role="group" aria-label="Tipo y debilidad">
+                            <input type="checkbox" class="btn-check" id="${type[1] + '-T'}" name="tipos" value="${type[0]}" autocomplete="off">
+                            <label class="btn btn-grey checkboxLabel rounded-circle fw-bold" for="${type[1] + '-T'}">T</label>
+                          
+                            <input type="checkbox" class="btn-check" id="${type[1] + '-D'}" name="debilidades" value="${type[0]}" autocomplete="off">
+                            <label class="btn btn-grey checkboxLabel rounded-circle fw-bold" for="${type[1] + '-D'}">D</label>
+                          </div>
+                        </div>`)
+  }
+  getAllAbilities();
+</script>
+</html>

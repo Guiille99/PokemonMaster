@@ -1,10 +1,43 @@
 @use "base/variables" as v;
 @use "sass:color";
 
+.btn{
+    padding: 5px 10px;
+}
+
 .btn-orange{
+    border: none;
     background-color: v.$orange;
     color: v.$white;
     &:hover{
         background-color: darken($color: v.$orange, $amount: 10%);
+    }
+}
+
+.btn-grey{
+    border: none;
+    background-color: v.$gris;
+    color: v.$black;
+    &:hover{
+        background-color: darken($color: v.$gris, $amount: 30%);
+    }
+}
+
+#btn-scrollToTop{
+    position: fixed;
+    top: 90vh;
+    right: 20px;
+    z-index: 3;
+    display: none;
+    background-color: v.$blue;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    opacity: .5;
+    .bi{
+        color: v.$white;
+    }
+    &:hover{
+        opacity: 1;
     }
 }

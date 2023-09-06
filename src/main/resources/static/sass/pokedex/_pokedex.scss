@@ -1,6 +1,11 @@
 @use "../base/variables" as v;
 @use "../base/mixins" as m;
 
+.form__container{
+    background-color: v.$dark-card;
+    padding: 40px;
+}
+
 .pokedex__container{
     // @include m.grid(4, 10px);
     min-height: 500px;
