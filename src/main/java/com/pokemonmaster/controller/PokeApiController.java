@@ -85,30 +85,57 @@ public class PokeApiController {
             pokemonList.clear();
         }
         Set<NamedApiResource<Pokemon>> pokemonSet = new HashSet<>();
+        List<NamedApiResource<Pokemon>> pokemonType = null; // Lista de Pokemon de los tipos filtrados
+        List<NamedApiResource<Pokemon>> pokemonWeaknessList = null; // Lista con los Pokemon débiles a los tipos filtrados
         // Almacenamos todos los pokemons de los tipos filtrados
         if (StringUtils.isNotEmpty(tipos)) {
+            pokemonType = new ArrayList<>();
             String[] types = tipos.split(",");
             for (String typeName : types) {
+                // List<NamedApiResource<Pokemon>> pkAux = new ArrayList<>();
                 Type tipo = pokeApiService.getResource(Type.class, typeName).block();
                 for (TypePokemon pk : tipo.getPokemon()) {
-                    pokemonList.add(pk.getPokemon());
+                    pokemonType.add(pk.getPokemon());
                 }
+            }
+            if (types.length > 1) {
+                pokemonType = retainRepeatedPokemon(pokemonType, types.length);
             }
         } 
 
-        // Almacenamos todos los pokemons débiles a los tipos filtrados
         if (StringUtils.isNotEmpty(debilidades)) {
-            String[] weaknesses = debilidades.split(",");
-            for (String weakName : weaknesses) {
-                Type weakness = pokeApiService.getResource(Type.class, weakName).block();
-                for (TypePokemon pk : weakness.getPokemon()) {
-                    pokemonList.add(pk.getPokemon());
+            pokemonWeaknessList = new ArrayList<>();
+            String[] types = debilidades.split(",");
+            List<String> weaknesess = new ArrayList<>();
+            // Almacenamos tipos que sean débiles a los tipos filtrados
+            for (String typeName : types) {
+                Type tipo = pokeApiService.getResource(Type.class, typeName).block();
+                for (NamedApiResource<Type> type : tipo.getDamageRelations().getDoubleDamageTo()) {
+                    weaknesess.add(type.getName());
                 }
+            }
+            // Almacenamos los pokemon
+            for (String weakness : weaknesess) {
+                Type tipo = pokeApiService.getResource(Type.class, weakness).block();
+                for (TypePokemon pk : tipo.getPokemon()) {
+                    pokemonWeaknessList.add(pk.getPokemon());
+                }
+            }
+            if (types.length > 1) {
+                pokemonWeaknessList = retainRepeatedPokemon(pokemonWeaknessList, types.length);
             }
         }
 
+        if (pokemonType != null && pokemonWeaknessList != null) {
+            pokemonList = pokemonType.stream().filter(pokemonWeaknessList::contains).collect(Collectors.toList());
+        } else if(pokemonType != null){
+            pokemonList = pokemonType;
+        } else if(pokemonWeaknessList != null){
+            pokemonList = pokemonWeaknessList;
+        }
+
+        pokemonSet = new HashSet<>(pokemonList);
         if (CollectionUtils.isNotEmpty(pokemonList)) {
-            pokemonSet = new HashSet<>(pokemonList);
             // Si se filtra por nombre habiendo filtrado también por tipo y/o debilidad
             if (StringUtils.isNotEmpty(nombre)) {
                 pokemonSet = pokemonSet.stream()
@@ -128,6 +155,7 @@ public class PokeApiController {
             return getIdFromURL(pokemon.getUrl());
         });
         Collections.sort(pokemonList, comparator);
+        eliminaPokemonVariantes();
         // Almacenamos los pokemon
         return ResponseEntity.ok(loadMorePokemon(page));
     }
@@ -228,4 +256,36 @@ public class PokeApiController {
         String[] parts = url.split("/");
 		return Integer.parseInt(parts[parts.length - 1]);
 	}
+    /**
+     * Método que deja solo los pokemons repetidos de la lista.
+     * Útil para obtener los Pokemon de más de un tipo distinto
+     * 
+     */
+    private List<NamedApiResource<Pokemon>> retainRepeatedPokemon(List<NamedApiResource<Pokemon>> pkList, Integer frecuencia){
+        Map<NamedApiResource<Pokemon>, Integer> frequencyMap = pkList.stream()
+        .collect(Collectors.groupingBy(pokemon -> pokemon, Collectors.summingInt(e -> 1)));
+
+        return frequencyMap.entrySet()
+        .stream()
+        .filter(entry -> entry.getValue() == frecuencia)
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toList());
+    }
+
+    /**
+     * Elimina las variantes especiales de los Pokemon
+     */
+    private void eliminaPokemonVariantes(){
+        pokemonList = pokemonList.stream()
+        .filter(pokemon ->{
+            String name = pokemon.getName();
+            boolean valid = true;
+            if (name.contains("-") && !name.endsWith("-f") && !name.endsWith("-m")
+            && !name.endsWith("origin") && !name.endsWith("altered")) {
+                return false;
+            }
+            return valid;
+        })
+        .collect(Collectors.toList());
+    }
 }

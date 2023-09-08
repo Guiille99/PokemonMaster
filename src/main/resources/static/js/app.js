@@ -243,7 +243,7 @@ function getPokemonFilter(filter) {
     data: filter,
     beforeSend: function() {
       pokedexContainer.prepend(
-        "<div class='spinner-container position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center'>"+
+        "<div class='spinner-container position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center'>"+
         "<div class='spinner spinner-border text-light' role='status'>"+
         "<span class='visually-hidden'>Loading...</span>"+
         "</div>"+
