@@ -216,22 +216,22 @@ function getAllAbilities() {
     type: "GET",
     url: "/api/pokedex/abilities",
     success: function(abilitiesData){
-      abilitiesData.results.forEach(abilityData => {
-        // console.log(abilityData)
-        $.ajax({
-          type: "GET",
-          url: abilityData.url,
-          success: function(ability){
-            // console.log(ability.names);
-            // console.log(ability.names.some(obj => obj.language.name == 'es'));
-            if (ability.names.some(obj => obj.language.name == 'es')) {
-              $("#habilidades").append(`<option value='${ability.names.find(obj => obj.language.name === 'en').name}'>${ability.names.find(obj => obj.language.name === 'es').name}</option>`)
-            } else{
-              $("#habilidades").append(`<option value='${ability.names.find(obj => obj.language.name === 'en').name}'>${ability.names.find(obj => obj.language.name === 'en').name}</option>`)
-            }
-          }
-        })
+      // console.log(abilitiesData);
+      const promises = [];
+      abilitiesData.forEach(abilityData => {
+        const promise = fetchPokemonDetails(abilityData.url);
+        promises.push(promise);
       });
+      Promise.all(promises)
+      .then(abilities => {
+        abilities.forEach(ability => {
+          if (ability.names.some(obj => obj.language.name == 'es')) {
+            $("#habilidades").append(`<option value='${ability.names.find(obj => obj.language.name === 'en').name}'>${ability.names.find(obj => obj.language.name === 'es').name}</option>`)
+          } else{
+            $("#habilidades").append(`<option value='${ability.names.find(obj => obj.language.name === 'en').name}'>${ability.names.find(obj => obj.language.name === 'en').name}</option>`)
+          }
+        });
+      })
     }
   })
 }
@@ -261,7 +261,9 @@ function getPokemonFilter(filter) {
           .then(pokemonList => {
             pokedexContainer.html("");
             if (response.isFinish) {
-              $("#btn-load-more").remove();
+              $("#btn-load-more").addClass("d-none");
+            } else{
+              $("#btn-load-more").removeClass("d-none");
             }
             pokemonList.forEach(pokemon => {
               let typesHTML = '';
@@ -269,6 +271,7 @@ function getPokemonFilter(filter) {
                   typesHTML += `<span class='${eliminaTildes(typesInSpanish[type.type.name].toLowerCase())} pokemon__type'>${typesInSpanish[type.type.name]}</span>`;
               }); 
               pokedexContainer.append(`<div class="pokemon-card">
+                          <a href="/pokemon/${pokemon.name}" class='position-absolute w-100 h-100'></a>
                           <figure class="m-0">
                               <img loading="lazy" src="${pokemon.sprites.other['official-artwork'].front_default}" alt="${capitalize(pokemon.name)}" class="d-block img-fluid">
                           </figure>
@@ -285,6 +288,12 @@ function getPokemonFilter(filter) {
         })
         .catch(error => {
             console.error(error);
+            pokedexContainer.html("");
+            $("#empty-message").html(`<div class="alert alert-danger" role="alert">
+                                      <i class='bi bi-exclamation-triangle-fill'></i>
+                                      Se ha producido un error inesperado
+                                    </div>`
+            );
         })
         } else {
           pokedexContainer.html("");
@@ -294,8 +303,18 @@ function getPokemonFilter(filter) {
                                   </div>`
           );
         }
-    } 
+    },
+    error: function (){
+      pokedexContainer.html("");
+      $("#empty-message").html(`<div class="alert alert-danger" role="alert">
+                                <i class='bi bi-exclamation-triangle-fill'></i>
+                                Se ha producido un error inesperado
+                              </div>`
+      );
+    }
   })
+  $(".accordion-button").addClass("collapsed");
+  $(".accordion-collapse").removeClass("show");
 }
 
 function loadMorePokemon(page) {
@@ -321,7 +340,9 @@ function loadMorePokemon(page) {
         .then(pokemonList => {
           $(".spinner-container").remove();
           if (response.isFinish) {
-            $("#btn-load-more").remove();
+            $("#btn-load-more").addClass("d-none");
+          } else{
+            $("#btn-load-more").removeClass("d-none");
           }
           pokemonList.forEach(pokemon => {
             let typesHTML = '';
@@ -329,6 +350,7 @@ function loadMorePokemon(page) {
                 typesHTML += `<span class='${eliminaTildes(typesInSpanish[type.type.name].toLowerCase())} pokemon__type'>${typesInSpanish[type.type.name]}</span>`;
             }); 
             pokedexContainer.append(`<div class="pokemon-card">
+                        <a href="/pokemon/${pokemon.name}" class='position-absolute w-100 h-100'></a>
                         <figure class="m-0">
                             <img loading="lazy" src="${pokemon.sprites.other['official-artwork'].front_default}" alt="${capitalize(pokemon.name)}" class="d-block img-fluid">
                         </figure>

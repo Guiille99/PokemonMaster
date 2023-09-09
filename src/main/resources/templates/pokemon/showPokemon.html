@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{components/resources :: resources}"></th:block>
+    <title>PokemonMaster</title>
+</head>
+<body>
+    <header th:replace="~{layouts/plantilla :: header}"></header>
+    <p th:text="${pokemon.name}"></p>
+
+    <div th:replace="~{layouts/plantilla :: btn-scrollToTop}"></div>
+    
+    <footer th:replace="~{layouts/plantilla :: footer}" class="position-absolute bottom-0"></footer>
+</body>
+</html>

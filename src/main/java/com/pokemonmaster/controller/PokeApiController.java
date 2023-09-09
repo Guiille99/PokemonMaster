@@ -1,6 +1,7 @@
 package com.pokemonmaster.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import com.pokemonmaster.pokeapi.query.PageQuery;
 import com.pokemonmaster.pokeapi.resources.NamedApiResource;
 import com.pokemonmaster.pokeapi.resources.NamedApiResourceList;
 import com.pokemonmaster.pokeapi.resources.pokemon.abilities.Ability;
+import com.pokemonmaster.pokeapi.resources.pokemon.abilities.AbilityPokemon;
 import com.pokemonmaster.pokeapi.resources.pokemon.pokemon.Pokemon;
 import com.pokemonmaster.pokeapi.resources.types.Type;
 import com.pokemonmaster.pokeapi.resources.types.TypePokemon;
@@ -78,15 +80,27 @@ public class PokeApiController {
         return "pokedex/showPokedex";
     }
 
+    @GetMapping("/pokemon/{pokemon}")
+    public String showPokemon(@PathVariable(value = "pokemon") String idOrName, Model model){
+        Pokemon pokemon = pokeApiService.getResource(Pokemon.class, idOrName).block();
+        model.addAttribute("pokemon", pokemon);
+        model.addAttribute("nGeneraciones", pokeApiService.getNGeneraciones());
+        return "pokemon/showPokemon";
+    }
+
     @PostMapping ("/api/pokedex/filter")
     public ResponseEntity<Map<String, Object>> getPokemonFilter(@PathParam(value = "tipos") String tipos, 
     @PathParam(value = "debilidades") String debilidades, @PathParam(value = "nombre") String nombre, @PathParam(value = "habilidad") String habilidad, @RequestParam(defaultValue = "0") Integer page){
         if (CollectionUtils.isNotEmpty(pokemonList)) {
             pokemonList.clear();
         }
+        if (StringUtils.isEmpty(tipos) && StringUtils.isEmpty(debilidades) && StringUtils.isEmpty(habilidad) && StringUtils.isEmpty(nombre)) {
+            return getPokemonByGeneration(1);
+        }
         Set<NamedApiResource<Pokemon>> pokemonSet = new HashSet<>();
         List<NamedApiResource<Pokemon>> pokemonType = null; // Lista de Pokemon de los tipos filtrados
         List<NamedApiResource<Pokemon>> pokemonWeaknessList = null; // Lista con los Pokemon débiles a los tipos filtrados
+        List<NamedApiResource<Pokemon>> pokemonAbilitiesList = null; // Lista con los Pokemon con las habilidades filtradas
         // Almacenamos todos los pokemons de los tipos filtrados
         if (StringUtils.isNotEmpty(tipos)) {
             pokemonType = new ArrayList<>();
@@ -126,13 +140,16 @@ public class PokeApiController {
             }
         }
 
-        if (pokemonType != null && pokemonWeaknessList != null) {
-            pokemonList = pokemonType.stream().filter(pokemonWeaknessList::contains).collect(Collectors.toList());
-        } else if(pokemonType != null){
-            pokemonList = pokemonType;
-        } else if(pokemonWeaknessList != null){
-            pokemonList = pokemonWeaknessList;
+        // Se filtra por habilidad
+        if (StringUtils.isNotEmpty(habilidad)) {
+            pokemonAbilitiesList = new ArrayList<>();
+            Ability ability = pokeApiService.getResource(Ability.class, habilidad.toLowerCase().replaceAll(" ", "-")).block();
+            for (AbilityPokemon pk : ability.getPokemon()) {
+                pokemonAbilitiesList.add(pk.getPokemon());
+            }
         }
+
+        pokemonList = encontrarElementosComunes(new ArrayList<>(Arrays.asList(pokemonType, pokemonWeaknessList, pokemonAbilitiesList)));
 
         pokemonSet = new HashSet<>(pokemonList);
         if (CollectionUtils.isNotEmpty(pokemonList)) {
@@ -161,9 +178,13 @@ public class PokeApiController {
     }
 
     @GetMapping ("/api/pokedex/abilities")
-    public ResponseEntity<NamedApiResourceList<Ability>> getAbilities(){
-        return ResponseEntity.ok(pokeApiService.getResource(Ability.class, new PageQuery(358, 0)).block());
-    }
+    public ResponseEntity<List<NamedApiResource<Ability>>> getAbilities(){
+        Comparator<NamedApiResource<Ability>> comparator = Comparator.comparing(ability -> ability.getName());
+        List<NamedApiResource<Ability>> abilities = pokeApiService.getResource(Ability.class, new PageQuery(358, 0)).block().getResults();
+        Collections.sort(abilities, comparator);
+        return ResponseEntity.ok(abilities);
+        
+    } 
 
     @GetMapping("/api/generacion-paginate/{generacion}")
     public ResponseEntity<List<NamedApiResource<Pokemon>>> getPokemonByGenerationPaginate(@PathVariable(value = "generacion")Integer generacion, @RequestParam(defaultValue = "0") int page){
@@ -287,5 +308,31 @@ public class PokeApiController {
             return valid;
         })
         .collect(Collectors.toList());
+    }
+
+    /**
+     * Fusiona todas las listas de los filtros generando una única lista con los Pokemon que coinciden en todas ellas
+     */
+    private <T> List<T> encontrarElementosComunes(List<List<T>> lists){
+        if (CollectionUtils.isEmpty(lists)) {
+            return new ArrayList<>();
+        }
+        List<T> pkComunesList = new ArrayList<>();
+        for (List<T> list : lists) {
+            if (list != null) {
+                pkComunesList = new ArrayList<>(list);
+                break;
+            }
+        }
+        // Iterar sobre las listas restantes
+        for (int i = 1; i < lists.size(); i++) {
+            if (CollectionUtils.isNotEmpty(lists.get(i))) {
+                List<T> listaActual = lists.get(i);
+                pkComunesList = pkComunesList.stream()
+                        .filter(listaActual::contains)
+                        .collect(Collectors.toList());
+            }
+        }
+        return pkComunesList;
     }
 }

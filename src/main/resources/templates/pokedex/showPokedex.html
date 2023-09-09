@@ -31,7 +31,7 @@
                       </h2>
                       <div id="collapseOne" class="accordion-collapse collapse text-light" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                          <div class="d-flex justify-content-between">
+                          <div class="d-flex flex-column gap-3 flex-lg-row justify-content-between">
                             <!-- Tipos y debilidades -->
                             <div>
                               <h3>Tipo y debilidad</h3>
@@ -49,7 +49,7 @@
                               </div>
                             </div>
                             <!-- Habilidades -->
-                            <div class="col-md-4">
+                            <div class="col-lg-4">
                               <h3>Habilidades</h3>
                               <div class="abilities">
                                 <select name="habilidad" id="habilidades" class="form-select">
@@ -59,7 +59,7 @@
                               </div>
                             </div>
                           </div>
-                          <div class="buttons__container d-flex justify-content-end gap-3 mt-4">
+                          <div class="buttons__container d-flex justify-content-center justify-content-md-end gap-3 mt-4">
                             <button type="reset" class="btn btn-grey fw-bold">Restablecer</button>
                             <button type="submit" class="btn btn-orange fw-bold"><i class="bi bi-search"></i> Buscar</button>
                           </div>
@@ -69,7 +69,7 @@
                 </div>
             </form>
         </div>
-        <div class="d-flex flex-column gap-5 my-4 col-md-7 m-auto">
+        <div class="d-flex flex-column gap-5 col-md-7 m-auto">
           <div id="empty-message"></div>
           <div class="pokedex__container"></div>
           <button id="btn-load-more" class="btn btn-orange m-auto">Cargar más</button>
