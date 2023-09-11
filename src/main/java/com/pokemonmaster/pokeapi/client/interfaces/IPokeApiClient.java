@@ -11,6 +11,7 @@ import com.pokemonmaster.pokeapi.resources.pokemon.abilities.Ability;
 import com.pokemonmaster.pokeapi.resources.pokemon.pokemon.Pokemon;
 import com.pokemonmaster.pokeapi.resources.pokemon.pokemon.PokemonAbility;
 import com.pokemonmaster.pokeapi.resources.pokemon.pokemon.PokemonType;
+import com.pokemonmaster.pokeapi.resources.types.Type;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,6 +24,7 @@ public interface IPokeApiClient {
 	<T extends PokeApiResource> Flux<T> followResources(Supplier<List<NamedApiResource<T>>> resourcesSupplier, Class<T> cls);
 	Integer getNGeneraciones();
 	Pokemon getRandomPokemon();
+	List<String> getDebilidadesByTipo(NamedApiResource<Type> tipo);
 	List<PokemonType> typesInSpanish(List<PokemonType> types);
 	List<PokemonAbility> abilitiesInSpanish(List<PokemonAbility> abilities);
 	Pokemon getPokemonDto(String idOrName);

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +31,8 @@ import com.pokemonmaster.pokeapi.resources.NamedApiResourceList;
 import com.pokemonmaster.pokeapi.resources.pokemon.abilities.Ability;
 import com.pokemonmaster.pokeapi.resources.pokemon.abilities.AbilityPokemon;
 import com.pokemonmaster.pokeapi.resources.pokemon.pokemon.Pokemon;
+import com.pokemonmaster.pokeapi.resources.pokemon.pokemon.PokemonType;
+import com.pokemonmaster.pokeapi.resources.pokemonSpecies.PokemonSpecies;
 import com.pokemonmaster.pokeapi.resources.types.Type;
 import com.pokemonmaster.pokeapi.resources.types.TypePokemon;
 
@@ -82,9 +85,21 @@ public class PokeApiController {
 
     @GetMapping("/pokemon/{pokemon}")
     public String showPokemon(@PathVariable(value = "pokemon") String idOrName, Model model){
-        Pokemon pokemon = pokeApiService.getResource(Pokemon.class, idOrName).block();
+        List<String> debilidades = new ArrayList<>();
+        Pokemon pokemon = pokeApiService.getPokemonDto(idOrName);
+        PokemonSpecies pokemonSpecies = pokeApiService.getResource(PokemonSpecies.class, idOrName).block();
+        for (PokemonType type : pokemon.getTypes()) {
+            debilidades.addAll(pokeApiService.getDebilidadesByTipo(type.getType()));
+            debilidades = debilidades.stream()
+            .filter(debilidad -> !debilidad.equalsIgnoreCase(type.getType().getName())) //Elimina las debilidades que coincidad con su tipo
+            .distinct() //Elimina repetidos
+            .collect(Collectors.toList());
+        }
+
         model.addAttribute("pokemon", pokemon);
+        model.addAttribute("pokemonSpecies", pokemonSpecies);
         model.addAttribute("nGeneraciones", pokeApiService.getNGeneraciones());
+        model.addAttribute("debilidades", debilidades);
         return "pokemon/showPokemon";
     }
 
@@ -249,22 +264,16 @@ public class PokeApiController {
     // @GetMapping("/api/pokedex/loadMore")
     private Map<String, Object> loadMorePokemon(Integer page){
         Integer start = page * PAGE_SIZE;
-        // Integer end = PAGE_SIZE * (page + 1);
         Integer end = start + PAGE_SIZE;
         isFinish = false;
         if (PAGE_SIZE > pokemonList.size() || end > pokemonList.size()) {
             end = pokemonList.size();
             isFinish = true;
         }
-        
-        // if (start + end > pokemonList.size()) {
-        //     end = pokemonList.size();
-        // }
 
         Map<String, Object> response = new HashMap<>();
         response.put("isFinish", isFinish);
         response.put("pokemons", pokemonList.subList(start, end)); 
-        // return pokemonList.subList(start, end);
         return response;
     }
 

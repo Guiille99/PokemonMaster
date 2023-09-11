@@ -61,6 +61,9 @@ a{
 .electrico{
     background-color: v.$electricoColor;
     color: v.$black;
+    .info-name{
+        color: v.$white;
+    }
 }
 .fantasma{
     background-color: v.$fantasmaColor;
@@ -89,6 +92,9 @@ a{
 .planta{
     background-color: v.$plantaColor;
     color: v.$white;
+    .info-value{
+        color: v.$black;
+    }
 }
 .psiquico{
     background-color: v.$psiquicoColor;

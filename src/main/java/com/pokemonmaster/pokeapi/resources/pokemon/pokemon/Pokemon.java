@@ -16,10 +16,10 @@ public class Pokemon implements PokeApiResource {
     private Integer id;
     private String name;
     private Integer baseExperience;
-    private Integer height; // en decimetros
+    private double height; // en decimetros (en el DTO lo obtengo en m)
     private boolean isDefault;
     private Integer order;
-    private Integer weight; // en hectogramos
+    private double weight; // en hectogramos  (en el DTO lo obtengo en kg)
     private List<PokemonAbility> abilities;
     private List<NamedApiResource<PokemonForm>> forms;
     private List<VersionGameIndex> gameIndices;

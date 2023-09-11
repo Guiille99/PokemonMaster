@@ -1,0 +1,35 @@
+@use "../base/mixins" as m;
+@use "../base/variables" as v;
+
+h1.pokemon-title{
+    .pokemon__number{
+        color: v.$dark-grey;
+    }
+}
+.pokemon-data__container{
+    @include m.tablet{
+        @include m.grid(2, 10px);
+    }
+    #pokemon__img{
+        background-color: v.$light-grey;
+        border-radius: 3px;
+    }
+    .pokemon__info{
+        @include m.grid(2, 10px);
+        max-height: 200px;
+        padding: 10px;
+        border-radius: 3px;
+        .info-name{
+            font-weight: bold;
+        }
+        p{
+            margin: 0;
+        }
+    }
+    .pokemon__stats{
+        .stat{
+            display: grid;
+            grid-template-columns: .6fr .2fr 1fr;
+        }
+    }
+}
