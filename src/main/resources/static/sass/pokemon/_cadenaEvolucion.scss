@@ -2,9 +2,7 @@
 @use "../base/variables" as v;
 
 .cadena-evolucion__container{
-    .title{
-        color: v.$white;
-    }
+    color: v.$white;
     #cadena-evolucion{
         display: flex;
         align-items: center;

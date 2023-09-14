@@ -1,7 +1,6 @@
 let pokemonsCadena = [];
 $(document).ready(function(){
     let progressBars = $(".stat .progress-bar");
-    // console.log(progressBars);
     addProgressRating(progressBars);
 })
 
@@ -15,10 +14,11 @@ function getCadenaEvolucion(url) {
                 pokemonsCadena = [];
             }
             await obtenerEvoluciones(data.chain)
-            console.log(pokemonsCadena)
             if (pokemonsCadena.length > 0) {
+                if (pokemonsCadena.length == 1) {
+                    $(".cadena-evolucion__container .title").after("<span>Este pokemon no evoluciona</span>")
+                }
                 for (let i = 0; i < pokemonsCadena.length; i++) {
-                    console.log(pokemonsCadena[i])
                     $("#cadena-evolucion").append(addEvolutionCard(pokemonsCadena[i]));
                     if (i != pokemonsCadena.length - 1) {
                         $("#cadena-evolucion").append("<i class='bi arrow'></i>");
@@ -85,6 +85,5 @@ function addEvolutionCard(pokemon) {
         });
     card += `</div>
     </div>`;
-    console.log(card);
     return card;
 }

@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.pokemonmaster.pokeapi.client.interfaces.IPokeApiClient;
@@ -62,6 +62,11 @@ public class PokeApiController {
         return "index";
     }
 
+    @PostMapping("/search")
+    public String filterByNameOrId(@PathParam(value = "idOrName") String idOrName, Model model){
+        return "redirect:/pokemon/"+idOrName;
+    }
+
     @GetMapping("/generacion/{generacion}")
     public String showGeneraciones(@PathVariable(value = "generacion")Integer generacion, @RequestParam(defaultValue = "0") int page, Model model){
         
@@ -86,14 +91,23 @@ public class PokeApiController {
     @GetMapping("/pokemon/{pokemon}")
     public String showPokemon(@PathVariable(value = "pokemon") String idOrName, Model model){
         List<String> debilidades = new ArrayList<>();
-        Pokemon pokemon = pokeApiService.getPokemonDto(idOrName);
-        PokemonSpecies pokemonSpecies = pokeApiService.getResource(PokemonSpecies.class, idOrName).block();
-        for (PokemonType type : pokemon.getTypes()) {
-            debilidades.addAll(pokeApiService.getDebilidadesByTipo(type.getType()));
-            debilidades = debilidades.stream()
-            .filter(debilidad -> !debilidad.equalsIgnoreCase(type.getType().getName())) //Elimina las debilidades que coincidad con su tipo
-            .distinct() //Elimina repetidos
-            .collect(Collectors.toList());
+        Pokemon pokemon = new Pokemon();
+        PokemonSpecies pokemonSpecies = new PokemonSpecies();
+        try {
+            pokemon = pokeApiService.getPokemonDto(idOrName);
+            pokemonSpecies = pokeApiService.getResource(PokemonSpecies.class, idOrName).block();
+        } catch (Exception e) {
+            pokemon = null;
+        }
+
+        if (pokemon != null) {
+            for (PokemonType type : pokemon.getTypes()) {
+                debilidades.addAll(pokeApiService.getDebilidadesByTipo(type.getType()));
+                debilidades = debilidades.stream()
+                .filter(debilidad -> !debilidad.equalsIgnoreCase(type.getType().getName())) //Elimina las debilidades que coincidad con su tipo
+                .distinct() //Elimina repetidos
+                .collect(Collectors.toList());
+            }
         }
 
         model.addAttribute("pokemon", pokemon);
@@ -242,14 +256,45 @@ public class PokeApiController {
         return ResponseEntity.ok(loadMorePokemon(0));
     }
     
-    @GetMapping("/my-team/generate")
-    public ResponseEntity<List<Pokemon>> generateMyRandomTeam(){
+    @PostMapping("/my-team/generate")
+    public ResponseEntity<List<Pokemon>> generateMyRandomTeam(@RequestBody(required = false) List<PokemonType> pokemonTypes){
         List<Pokemon> myRandomTeam = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            myRandomTeam.add(pokeApiService.getRandomPokemon());
+        if (CollectionUtils.isEmpty(pokemonTypes)) {
+            for (int i = 0; i < 6; i++) {
+                myRandomTeam.add(pokeApiService.getRandomPokemon());
+            }
+        } else{
+            List<String> debilidades = new ArrayList<>();
+            for (PokemonType type : pokemonTypes) {
+                debilidades.addAll(pokeApiService.getDebilidadesByTipo(type.getType()));
+            }
+            for (int i = 0; i < 6; i++) {
+                Pokemon pokemon = new Pokemon();
+                boolean isEffective = false;
+                do {
+                    pokemon = pokeApiService.getRandomPokemon();
+                    for (PokemonType type : pokemon.getTypes()) {
+                        if (debilidades.contains(type.getType().getName())) {
+                            isEffective = true;
+                            break;
+                        }
+                    }
+                } while (!isEffective);
+                myRandomTeam.add(pokemon);
+            }
         }
         return ResponseEntity.ok(myRandomTeam);
     }
+
+    // @PostMapping("/api/my-team-against/generate")
+    // public void generateMyRandomAgainstTeam(@RequestBody List<PokemonType> pokemonTypes){
+    //     List<Pokemon> myRandomTeam = new ArrayList<>();
+    //     for (int i = 0; i < 6; i++) {
+            
+    //     }
+    //     Type tipo = pokeApiService.getTypeByUrl(pokemonTypes.get(0).getType().getUrl());
+    //     // return ResponseEntity.ok();
+    // }
 
     @Async
     private void initGenerationRange(){

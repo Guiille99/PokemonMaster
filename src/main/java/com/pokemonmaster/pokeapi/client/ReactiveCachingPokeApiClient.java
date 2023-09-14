@@ -1,6 +1,5 @@
 package com.pokemonmaster.pokeapi.client;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -200,19 +199,27 @@ public class ReactiveCachingPokeApiClient implements IPokeApiClient {
 
 	@Override
 	public List<String> getDebilidadesByTipo(NamedApiResource<Type> typeResource) {
-		NamedApiResource<Type> typResourceAux = typeResource;
-		Type tipo = new Type();
-		for (Map.Entry<String, String> typeEntry : translateTypes.entrySet()) {
-			if (typeEntry.getValue().equalsIgnoreCase(typResourceAux.getName())) {
-				tipo = getResource(Type.class, typeEntry.getKey()).block();
-				break;
-			}
-		}
+		// NamedApiResource<Type> typResourceAux = typeResource;
+		// Type tipo = new Type();
+		// for (Map.Entry<String, String> typeEntry : translateTypes.entrySet()) {
+		// 	if (typeEntry.getValue().equalsIgnoreCase(typResourceAux.getName())) {
+		// 		tipo = getResource(Type.class, typeEntry.getKey()).block();
+		// 		break;
+		// 	}
+		// }
+		Type tipo = getTypeByUrl(typeResource.getUrl());
 		List<String> debilidades = new ArrayList<>();
 		for (NamedApiResource<Type> weakness : tipo.getDamageRelations().getDoubleDamageFrom()) {
 			debilidades.add(translateTypes.get(weakness.getName()));
 		}
 		return debilidades;
+	}
+
+	@Override
+	public Type getTypeByUrl(String url) {
+		String[] urlParts = url.split("/");
+		String typeID = urlParts[urlParts.length - 1];
+		return getResource(Type.class, typeID).block();
 	}
     
 }

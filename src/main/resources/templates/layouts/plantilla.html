@@ -48,10 +48,10 @@
                                 </ul>
                             </li>
                         </ul>
-                        <form action="" method="post">
+                        <form th:action="@{/search}" method="post">
                             <div class="input-group">
                                 <span class="input-group-text" id="addon-wrapping"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" placeholder="Nombre o número" aria-label="Nombre o número" aria-describedby="addon-wrapping">
+                                <input type="text" class="form-control" name="idOrName" placeholder="Nombre o número" aria-label="Nombre o número" aria-describedby="addon-wrapping">
                             </div>
                             <button type="submit" class="d-none"></button>
                         </form>

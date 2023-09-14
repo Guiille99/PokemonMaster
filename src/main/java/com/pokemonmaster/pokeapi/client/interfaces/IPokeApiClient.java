@@ -30,4 +30,5 @@ public interface IPokeApiClient {
 	Pokemon getPokemonDto(String idOrName);
 	NamedApiResource<Ability> getAbilityInSpanish(NamedApiResource<Ability> habilidad);
 	int sortByID(String pkId1, String pkId2);
+	Type getTypeByUrl(String url);
 }

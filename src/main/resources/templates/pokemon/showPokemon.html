@@ -7,124 +7,115 @@
     <script th:src="@{/js/pokemon.js}"></script>
     <title>PokemonMaster</title>
 </head>
-<body>
+<body th:classappend="${pokemon == null} ? 'd-flex flex-column justify-content-between vh-100' : ''">
     <header th:replace="~{layouts/plantilla :: header}"></header>
     
-    <div class="container my-4">
-        <h1 class="pokemon-title fw-bold text-center"><span th:text="${#strings.capitalizeWords(pokemon.name)}"></span> <span class="pokemon__number" th:text="'Nº ' + ${pokemon.id}"></span></h1>
-
-        <section class="pokemon-data__container col-lg-8 m-auto mt-4">
-            <figure id="pokemon__img">
-                <img th:src="${pokemon.sprites.other.officialArtwork.frontDefault}" th:alt="${pokemon.name}" class="d-block img-fluid">
-            </figure>
-            <!-- Info y Tipos/Debilidades -->
-            <div>
-                <!-- Info del Pokemon -->
-                <div class="pokemon__info" th:classappend="${pokemon.types.get(0).type.name.replaceAll('[áÁ]', 'a').replaceAll('[éÉ]', 'e').replaceAll('[íÍ]', 'i').replaceAll('[óÓ]', 'o').replaceAll('[úÚ]', 'u')}">
-                    <div class="info">
-                        <p class="info-name">Altura</p>
-                        <p class="info-value" th:text="${pokemon.height + ' m'}"></p>
+    <div class="container my-4" th:classappend="${pokemon == null} ? 'flex-grow-1' : ''"> 
+        <th:block th:if="${pokemon != null}">
+            <h1 class="pokemon-title fw-bold text-center"><span th:text="${#strings.capitalizeWords(pokemon.name)}"></span> <span class="pokemon__number" th:text="'Nº ' + ${pokemon.id}"></span></h1>
+            <section class="pokemon-data__container col-lg-8 m-auto mt-4">
+                <figure id="pokemon__img">
+                    <img th:src="${pokemon.sprites.other.officialArtwork.frontDefault}" th:alt="${pokemon.name}" class="d-block img-fluid">
+                </figure>
+                <!-- Info y Tipos/Debilidades -->
+                <div>
+                    <!-- Info del Pokemon -->
+                    <div class="pokemon__info" th:classappend="${pokemon.types.get(0).type.name.replaceAll('[áÁ]', 'a').replaceAll('[éÉ]', 'e').replaceAll('[íÍ]', 'i').replaceAll('[óÓ]', 'o').replaceAll('[úÚ]', 'u')}">
+                        <div class="info">
+                            <p class="info-name">Altura</p>
+                            <p class="info-value" th:text="${pokemon.height + ' m'}"></p>
+                        </div>
+                        <div class="info">
+                            <p class="info-name">Peso</p>
+                            <p class="info-value" th:text="${pokemon.weight + ' Kg'}"></p>
+                        </div>
+                        <div class="info">
+                            <p class="info-name">Género</p>
+                            <th:block th:switch="${pokemonSpecies.genderRate}">
+                                <span class="info-value" th:case="1"><i class="bi bi-gender-male"></i></span>
+                                <span class="info-value" th:case="7"><i class="bi bi-gender-female"></i></span>
+                                <div th:case="*">
+                                    <span class="info-value"><i class="bi bi-gender-male"></i></span>
+                                    <span class="info-value"><i class="bi bi-gender-female"></i></spanse=>
+                                </div>
+                            </th:block>
+                        </div>
+                        <div class="info">
+                            <p class="info-name">Habilidades</p>
+                            <p class="info-value" th:each="ability: ${pokemon.abilities}" th:text="${ability.ability.name}"></p>
+                        </div>
                     </div>
-                    <div class="info">
-                        <p class="info-name">Peso</p>
-                        <p class="info-value" th:text="${pokemon.weight + ' Kg'}"></p>
-                    </div>
-                    <div class="info">
-                        <p class="info-name">Género</p>
-                        <th:block th:switch="${pokemonSpecies.genderRate}">
-                            <span class="info-value" th:case="1"><i class="bi bi-gender-male"></i></span>
-                            <span class="info-value" th:case="7"><i class="bi bi-gender-female"></i></span>
-                            <div th:case="*">
-                                <span class="info-value"><i class="bi bi-gender-male"></i></span>
-                                <span class="info-value"><i class="bi bi-gender-female"></i></spanse=>
+    
+                    <!-- Tipos y Debilidades -->
+                    <div class="mt-3">
+                        <div class="types">
+                            <h3 class="fw-bold">Tipo</h3>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <span class="pokemon__type" th:each="tipo: ${pokemon.types}" th:classappend="${tipo.type.name.replaceAll('[áÁ]', 'a').replaceAll('[éÉ]', 'e').replaceAll('[íÍ]', 'i').replaceAll('[óÓ]', 'o').replaceAll('[úÚ]', 'u')}" 
+                                th:text="${#strings.capitalize(tipo.type.name)}"></span>
                             </div>
-                        </th:block>
-                    </div>
-                    <div class="info">
-                        <p class="info-name">Habilidades</p>
-                        <p class="info-value" th:each="ability: ${pokemon.abilities}" th:text="${ability.ability.name}"></p>
+                        </div>
+                        <div class="debilidades mt-3">
+                            <h3 class="fw-bold">Debilidades</h3>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <span class="pokemon__type" th:each="debilidad: ${debilidades}" th:classappend="${debilidad.replaceAll('[áÁ]', 'a').replaceAll('[éÉ]', 'e').replaceAll('[íÍ]', 'i').replaceAll('[óÓ]', 'o').replaceAll('[úÚ]', 'u')}" 
+                                th:text="${#strings.capitalize(debilidad)}"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <!-- Stats -->
+                <div class="pokemon__stats">
+                    <p class="fw-bold">Puntos base</p>
+                    <div class="stats d-grid gap-1">
+                        <div class="stat align-items-center" th:each="stat: ${pokemon.stats}">
+                            <p class="stat-name fw-bold m-0" th:text="${stat.stat.name}"></p>
+                            <p class="stat-value m-0" th:text="${stat.baseStat}"></p>
+                            <div class="progress flex-grow-1">
+                                <div max="100" th:value="${(stat.baseStat/260.0)*100}" class="progress-bar" th:style="'width:' + ${(stat.baseStat/260.0)*100} + '%;'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    
+            <section class="cadena-evolucion__container mt-4">
+                <h3 class="title">Evoluciones</h3>
+                <div id="cadena-evolucion">
+                </div>
+            </section>
 
-                <!-- Tipos y Debilidades -->
-                <div class="mt-3">
-                    <div class="types">
-                        <h3 class="fw-bold">Tipo</h3>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <span class="pokemon__type" th:each="tipo: ${pokemon.types}" th:classappend="${tipo.type.name.replaceAll('[áÁ]', 'a').replaceAll('[éÉ]', 'e').replaceAll('[íÍ]', 'i').replaceAll('[óÓ]', 'o').replaceAll('[úÚ]', 'u')}" 
-                            th:text="${#strings.capitalize(tipo.type.name)}"></span>
-                        </div>
-                    </div>
-                    <div class="debilidades mt-3">
-                        <h3 class="fw-bold">Debilidades</h3>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <span class="pokemon__type" th:each="debilidad: ${debilidades}" th:classappend="${debilidad.replaceAll('[áÁ]', 'a').replaceAll('[éÉ]', 'e').replaceAll('[íÍ]', 'i').replaceAll('[óÓ]', 'o').replaceAll('[úÚ]', 'u')}" 
-                            th:text="${#strings.capitalize(debilidad)}"></span>
-                        </div>
-                    </div>
-                </div>
+            <section class="shiny__container mt-4">
+
+            </section>
+        </th:block>
+        <th:block th:unless="${pokemon != null}">
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span> No se han encontrado Pokemon con ese nombre o ID</span>
             </div>
-            <!-- Stats -->
-            <div class="pokemon__stats">
-                <p class="fw-bold">Puntos base</p>
-                <div class="stats d-grid gap-1">
-                    <div class="stat align-items-center" th:each="stat: ${pokemon.stats}">
-                        <p class="stat-name fw-bold m-0" th:text="${stat.stat.name}"></p>
-                        <p class="stat-value m-0" th:text="${stat.baseStat}"></p>
-                        <div class="progress flex-grow-1">
-                            <div max="100" th:value="${(stat.baseStat/260.0)*100}" class="progress-bar" th:style="'width:' + ${(stat.baseStat/260.0)*100} + '%;'"></div>
-                        </div>
-                    </div>
+        </th:block>
+
+        <section>
+            <!-- Equipo aleatorio -->
+            <div class="pokemon__container my_random_against_team mt-5">
+                <div class="title">
+                <figure class="m-0 align-self-baseline align-self-md-center">
+                    <img th:src="@{/images/pokeball-icon-grey.svg}" alt="Pokeball" class="d-block img-fluid pokeball-icon"/>
+                </figure>
+                <div class="d-flex align-items-center gap-3 flex-column flex-md-row">
+                    <h3 class="m-0 fw-bold">Genera un equipo para derrotarle</h3>
+                    <button class="btn btn-orange btn-generate-randomTeam"><i class="bi bi-arrow-clockwise"></i> Generar</button>
+                </div>
+                </div>
+                <div class="pokemon__box my_team position-relative">
+                <div class="empty-text__container">
+                    <p class="text-center m-0">Tu equipo aparecerá aquí</p>
+                </div>
                 </div>
             </div>
         </section>
 
-        <section class="cadena-evolucion__container mt-4">
-            <h3 class="title">Evoluciones</h3>
-            <div id="cadena-evolucion">
-                <!-- <div class="evolution-card">
-                    <figure class="m-0">
-                        <img th:src="${pokemon.sprites.other.officialArtwork.frontDefault}" alt="" class="d-block img-fluid">
-                    </figure>
-                    <div class="pokemon__info">
-                        <span class="pokemon__name" th:text="${#strings.capitalizeWords(pokemon.name)}"></span>
-                        <span class="pokemon__id" th:text="${'Nº ' + pokemon.id}"></span>
-                    </div>
-                    <div class="types">
-                        <span class="pokemon__type planta">Planta</span>
-                        <span class="pokemon__type planta">Planta</span>
-                    </div>
-                </div>
-                <i class="bi arrow"></i>
-                <div class="evolution-card">
-                    <figure class="m-0">
-                        <img th:src="${pokemon.sprites.other.officialArtwork.frontDefault}" alt="" class="d-block img-fluid">
-                    </figure>
-                    <div class="pokemon__info">
-                        <span class="pokemon__name" th:text="${#strings.capitalizeWords(pokemon.name)}"></span>
-                        <span class="pokemon__id" th:text="${'Nº ' + pokemon.id}"></span>
-                    </div>
-                    <div class="types">
-                        <span class="pokemon__type planta">Planta</span>
-                        <span class="pokemon__type planta">Planta</span>
-                    </div>
-                </div>
-                <i class="bi arrow"></i>
-                <div class="evolution-card">
-                    <figure class="m-0">
-                        <img th:src="${pokemon.sprites.other.officialArtwork.frontDefault}" alt="" class="d-block img-fluid">
-                    </figure>
-                    <div class="pokemon__info">
-                        <span class="pokemon__name" th:text="${#strings.capitalizeWords(pokemon.name)}"></span>
-                        <span class="pokemon__id" th:text="${'Nº ' + pokemon.id}"></span>
-                    </div>
-                    <div class="types">
-                        <span class="pokemon__type planta">Planta</span>
-                        <span class="pokemon__type planta">Planta</span>
-                    </div>
-                </div> -->
-            </div>
-        </section>
     </div>
 
     <div th:replace="~{layouts/plantilla :: btn-scrollToTop}"></div>
@@ -134,6 +125,13 @@
 <script th:inline="javascript">
     /*<![CDATA[*/    
     let url = /*[[${pokemonSpecies.evolutionChain}]]*/ null;
+    /*]]>*/
+
+    let urlRandomTeam = "/api/my-team-against/generate";
+    let isAgainst = true;
+
+    /*<![CDATA[*/    
+    let tipos = /*[[${pokemon.types}]]*/ null;
     /*]]>*/
     getCadenaEvolucion(url.url);
 </script>

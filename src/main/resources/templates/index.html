@@ -98,7 +98,7 @@
       </div>
 
       <!-- Equipo aleatorio -->
-      <div class="pokemon__container mt-5">
+      <div class="pokemon__container my_random_team__container mt-5">
         <div class="title">
           <figure class="m-0 align-self-baseline align-self-md-center">
             <img th:src="@{/images/pokeball-icon-grey.svg}" alt="Pokeball" class="d-block img-fluid pokeball-icon"/>
@@ -122,6 +122,7 @@
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
   <script>
+    let urlRandomTeam = "/my-team/generate";
     $(document).ready(function () {
       $(".slider").slick({
         centerMode: true,
